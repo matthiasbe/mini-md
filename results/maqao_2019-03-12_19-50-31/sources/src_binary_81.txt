@@ -1,0 +1,4 @@
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//force_lj.cpp: 332 - 332
+--------------------------------------------------------------------------------
+
+332:           f[j * PAD + 2] -= delz * force;

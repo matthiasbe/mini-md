@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en-US"><head><title>ONEVIEW: report one - Function Neighbor::build(Atom&)</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="../css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="../css/themes/redmond_custom/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="../css/themes/redmond_custom/jquery.jqplot.min.css" />
+<link rel="stylesheet" type="text/css" href="../css/maqao_modal.css" />
+<link rel="stylesheet" type="text/css" href="../css/global.css" />
+<link rel="stylesheet" type="text/css" href="../css/maqao_menu.css" />
+<script src="../js/jquery-1.9.0.min.js" ></script>
+<script src="../js/jquery-ui-1.10.3.custom.min.js" ></script>
+<script src="../js/grid.locale-en.js" ></script>
+<script src="../js/jquery.jqGrid.min.js" ></script>
+<script src="../js/d3.min.js" ></script>
+<script class="include" src="../js/jquery.jqplot.min.js"></script>
+<script class="include" src="../js/jqplot.pieRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.barRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.categoryAxisRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.pointLabels.min.js"></script>
+<script class="include" src="../js/jqplot.cursor.min.js"></script>
+<script class="include" src="../js/jqplot.canvasTextRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.enhancedLegendRenderer.min.js"></script>
+<script class="include" src="../js/jqplot.highlighter.min.js"></script>
+<script class="include" src="../js/maqao_menu.js"></script>
+<script>
+$( function() {
+  $( document ).tooltip({
+    content: function() {
+      if ($(this).hasClass ("tooltip-maqao")
+      ||  $(this).hasClass ("tooltip-maqao-button")) {
+        return $(this).attr('title');
+      }
+    },
+    position: {
+      my: "center bottom-20",
+        at: "center top",
+        using: function( position, feedback ) {
+          $( this ).css( position );
+          $( "<div>" )
+            .addClass( "arrow-tt" )
+            .addClass( feedback.vertical )
+            .addClass( feedback.horizontal )
+            .appendTo( this );
+        }
+      }
+  });
+} );
+
+// Code from https://www.htmlgoodies.com/beyond/javascript/article.php/3724571/Using-Multiple-JavaScript-Onload-Functions.htm
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+</script>
+</head><body>
+<div id="page_title"><img alt="MAQAO" id="maqao_logo" src="../images/MAQAO_small_logo.png" /><ul id="maqao_menu"><li><a  href="../index.html">Global</a></li><li><a  href="../application.html">Application</a></li><li><a  href="../fcts_and_loops.html">Functions</a></li><li><a  href="../loops_index.html">Loops</a></li><li><a  href="../topology.html">Topology</a></li></ul></div>
+<div id="anchor_file_start"></div>
+<div id="maqao_content">
+<div id="spacer_page_title" style="height:100px;" ></div>
+<div id="main_section_div" data-path="0" data-maxpath="0" data-bucket="0" data-maxbucket="0" data-variants='' >
+<!-- ========================== Summary about the loop ========================== -->
+  <table style="width:100%;border-radius:5px;color:white;background:#114B79;margin-bottom:15px;">
+    <tr>
+      <th>Function: Neighbor::build(Atom&)</th>
+      <th>Module: binary</th>
+      <th>Source: neighbor.cpp:80</th>
+      <th>Coverage: 10.2%</th>
+    </tr>
+  </table>
+  <div class="drag-container" id="main_section_content">
+    <!-- =============================== Left part ================================== -->
+    <div class="panel-one _fixed_box" id="drag-left">
+      <div id="leftpanelheader" style="background:#16609c;text-align:center;height:30px;">
+        <div style="display:table;width:100%;height:30px;text-align:center">
+          <div style="display:table-row">
+            <div style="display:table-cell;vertical-align:middle;">
+              <select id="leftpanelselector" size="1" onchange="_changepanel ('leftpanelcontent', this, 'rightpanelselector', 'leftpanelhelp');" autocomplete="off">
+                <option value="panel_src" selected>Source Code</option>
+                <option value="panel_ldbal">Load Distribution</option>
+                <option value="panel_cqa" disabled>CQA</option>
+                <option value="panel_loops">Loop Hierachy</option>
+              </select>
+            </div>
+            <div style="display:table-cell;vertical-align:middle;width:20px;">
+              <span id="leftpanelextract" class="tooltip-maqao-button extract-maqao" title="Open on a new tab" onclick="extract_panel (leftpanelselector);"></span>
+            </div>
+            <div style="display:table-cell;vertical-align:middle;width:20px;">
+              <span id="leftpanelhelp" class="tooltip-maqao-button help-maqao" title=""></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="leftpanelcontent" style="overflow: auto;"></div>
+    </div>
+    <!-- ================================ Drag bar =================================== -->
+    <div class="dragbar" id="dragbar">
+    </div>
+    <!-- =============================== Right part ================================== -->
+    <div class="panel-two _fixed_box" id="drag-right">
+      <div id="rightpanelheader" style="background:#16609c;text-align:center;height:30px;">
+        <div style="display:table;width:100%;height:30px;text-align:center">
+          <div style="display:table-row">
+            <div style="display:table-cell;vertical-align:middle;">
+              <select id="rightpanelselector" size="1" onchange="_changepanel ('rightpanelcontent', this, 'leftpanelselector', 'rightpanelhelp');" autocomplete="off">
+                <option value="panel_src" disabled>Source Code</option>
+                <option value="panel_ldbal">Load Distribution</option>
+                <option value="panel_cqa" selected>CQA</option>
+                <option value="panel_loops">Loop Hierachy</option>
+              </select>
+            </div>
+            <div style="display:table-cell;vertical-align:middle;width:20px;">
+              <span id="rightpanelextract" class="tooltip-maqao-button extract-maqao" style="margin-top: 2px;" title="Open on a new tab" onclick="extract_panel (rightpanelselector);"></span>
+            </div>
+            <div style="display:table-cell;vertical-align:middle;width:20px;">
+              <span id="rightpanelhelp" class="tooltip-maqao-button help-maqao" style="margin-top: 2px;" title=""></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="rightpanelcontent" style="overflow: auto;"></div>
+    </div>
+  </div>
+</div>
+    <!-- ========================== Start Of Storage ============================= -->
+<div id="_ONEVIEW_inner_storage" style="display:none;">
+<div class="panelcontent" id="OV_panel_src">
+  <pre>
+    <code>
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//neighbor.cpp: 80 - 299
+--------------------------------------------------------------------------------
+
+80: {
+81:   ncalls++;
+82:   const int nlocal = atom.nlocal;
+83:   const int nall = atom.nlocal + atom.nghost;
+84:   /* extend atom arrays if necessary */
+85: 
+86:   #pragma omp master
+87: 
+88:   if(nall &gt; nmax) {
+89:     nmax = nall;
+90: #ifdef ALIGNMALLOC
+91:     if(numneigh) _mm_free(numneigh);
+92:     numneigh = (int*) _mm_malloc(nmax * sizeof(int) + ALIGNMALLOC, ALIGNMALLOC);
+93:     if(neighbors) _mm_free(neighbors);	
+94:     neighbors = (int*) _mm_malloc(nmax * maxneighs * sizeof(int) + ALIGNMALLOC, ALIGNMALLOC);
+95: #else
+96: 
+97:     if(numneigh) free(numneigh);
+98: 
+99:     if(neighbors) free(neighbors);
+100: 
+101:     numneigh = (int*) malloc(nmax * sizeof(int));
+102:     neighbors = (int*) malloc(nmax * maxneighs * sizeof(int));
+103: #endif
+104:   }
+105: 
+106:   #pragma omp barrier
+107:   /* bin local &amp; ghost atoms */
+108: 
+109:   binatoms(atom);
+110:   count = 0;
+111:   /* loop over each atom, storing neighbors */
+112: 
+113:   const MMD_float* const x = atom.x;
+114:   const int* const type = atom.type;
+115:   int ntypes = atom.ntypes;
+116: 
+117:   resize = 1;
+118:   #pragma omp barrier
+119: 
+120:   while(resize) {
+121:     #pragma omp barrier
+122:     int new_maxneighs = maxneighs;
+123:     resize = 0;
+124:     #pragma omp barrier
+125: 
+126:     OMPFORSCHEDULE
+127:     for(int i = 0; i &lt; nlocal; i++) {
+128:       int* neighptr = &amp;neighbors[i * maxneighs];
+129:       /* if necessary, goto next page and add pages */
+130: 
+131:       int n = 0;
+132: 
+133:       const MMD_float xtmp = x[i * PAD + 0];
+134:       const MMD_float ytmp = x[i * PAD + 1];
+135:       const MMD_float ztmp = x[i * PAD + 2];
+136: 
+137:       const int type_i = type[i];
+138: 
+139:       /* loop over atoms in i&apos;s bin,
+140:       */
+141: 
+142:       const int ibin = coord2bin(xtmp, ytmp, ztmp);
+143: 
+144:       for(int k = 0; k &lt; nstencil; k++) {
+145:         const int jbin = ibin + stencil[k];
+146: 
+147:         int* loc_bin = &amp;bins[jbin * atoms_per_bin];
+148: 
+149:         if(ibin == jbin)
+150:           for(int m = 0; m &lt; bincount[jbin]; m++) {
+151:             const int j = loc_bin[m];
+152: 
+153:             //for same bin as atom i skip j if i==j and skip atoms &quot;below and to the left&quot; if using halfneighborlists
+154:             if(((j == i) || (halfneigh &amp;&amp; !ghost_newton &amp;&amp; (j &lt; i)) ||
+155:                 (halfneigh &amp;&amp; ghost_newton &amp;&amp; ((j &lt; i) || ((j &gt;= nlocal) &amp;&amp;
+156:                                                ((x[j * PAD + 2] &lt; ztmp) || (x[j * PAD + 2] == ztmp &amp;&amp; x[j * PAD + 1] &lt; ytmp) ||
+157:                                                 (x[j * PAD + 2] == ztmp &amp;&amp; x[j * PAD + 1]  == ytmp &amp;&amp; x[j * PAD + 0] &lt; xtmp))))))) continue;
+158: 
+159:             const MMD_float delx = xtmp - x[j * PAD + 0];
+160:             const MMD_float dely = ytmp - x[j * PAD + 1];
+161:             const MMD_float delz = ztmp - x[j * PAD + 2];
+162:             const int type_j = type[j];
+163:             const MMD_float rsq = delx * delx + dely * dely + delz * delz;
+164: 
+165:             if((rsq &lt;= cutneighsq[type_i*ntypes+type_j])) neighptr[n++] = j;
+166:           }
+167:         else {
+168:           for(int m = 0; m &lt; bincount[jbin]; m++) {
+169:             const int j = loc_bin[m];
+170: 
+171:             if(halfneigh &amp;&amp; !ghost_newton &amp;&amp; (j &lt; i)) continue;
+172: 
+173:             const MMD_float delx = xtmp - x[j * PAD + 0];
+174:             const MMD_float dely = ytmp - x[j * PAD + 1];
+175:             const MMD_float delz = ztmp - x[j * PAD + 2];
+176:             const int type_j = type[j];
+177:             const MMD_float rsq = delx * delx + dely * dely + delz * delz;
+178: 
+179:             if((rsq &lt;= cutneighsq[type_i*ntypes+type_j])) neighptr[n++] = j;
+180:           }
+181:         }
+182:       }
+183: 
+184:       numneigh[i] = n;
+185: 
+186:       if(n &gt;= maxneighs) {
+187:         resize = 1;
+188: 
+189:         if(n &gt;= new_maxneighs) new_maxneighs = n;
+190:       }
+191:     }
+192: 
+193:     // #pragma omp barrier
+194: 
+195:     if(resize) {
+196:       #pragma omp master
+197:       {
+198:         maxneighs = new_maxneighs * 1.2;
+199: #ifdef ALIGNMALLOC
+200:   		_mm_free(neighbors);
+201:   		neighbors = (int*) _mm_malloc(nmax* maxneighs * sizeof(int) + ALIGNMALLOC, ALIGNMALLOC);
+202: #else
+203:   		free(neighbors);
+204:         neighbors = (int*) malloc(nmax* maxneighs * sizeof(int));
+205: #endif
+206:       }
+207:       #pragma omp barrier
+208:     }
+209:   }
+210: 
+211:   #pragma omp barrier
+212: 
+213: }
+214: 
+215: void Neighbor::binatoms(Atom &amp;atom, int count)
+216: {
+217:   const int nlocal = atom.nlocal;
+218:   const int nall = count&lt;0?atom.nlocal + atom.nghost:count;
+219:   const MMD_float* const x = atom.x;
+220: 
+221:   xprd = atom.box.xprd;
+222:   yprd = atom.box.yprd;
+223:   zprd = atom.box.zprd;
+224: 
+225:   resize = 1;
+226: 
+227:   #pragma omp barrier
+228: 
+229:   while(resize &gt; 0) {
+230:     #pragma omp barrier
+231:     resize = 0;
+232:     #pragma omp barrier
+233:     #pragma omp for schedule(static)
+234:     for(int i = 0; i &lt; mbins; i++) bincount[i] = 0;
+235: 
+236: 
+237:     OMPFORSCHEDULE
+238:     for(int i = 0; i &lt; nall; i++) {
+239:       const int ibin = coord2bin(x[i * PAD + 0], x[i * PAD + 1], x[i * PAD + 2]);
+240: 
+241:       if(bincount[ibin] &lt; atoms_per_bin) {
+242:         int ac;
+243: #ifdef OpenMP31
+244:         #pragma omp atomic capture
+245:         ac = bincount[ibin]++;
+246: #else
+247:         ac = __sync_fetch_and_add(bincount + ibin, 1);
+248: #endif
+249:         bins[ibin * atoms_per_bin + ac] = i;
+250:       } else resize = 1;
+251:     }
+252: 
+253:     // #pragma omp barrier
+254: 
+255:     #pragma omp master
+256: 
+257:     if(resize) {
+258:       free(bins);
+259:       atoms_per_bin *= 2;
+260:       bins = (int*) malloc(mbins * atoms_per_bin * sizeof(int));
+261:     }
+262: 
+263:     // #pragma omp barrier
+264:   }
+265: 
+266:   #pragma omp barrier
+267: 
+268: }
+269: 
+270: /* convert xyz atom coords into local bin #
+271:    take special care to insure ghost atoms with
+272:    coord &gt;= prd or coord &lt; 0.0 are put in correct bins */
+273: 
+274: inline int Neighbor::coord2bin(MMD_float x, MMD_float y, MMD_float z)
+275: {
+276:   int ix, iy, iz;
+277: 
+278:   if(x &gt;= xprd)
+279:     ix = (int)((x - xprd) * bininvx) + nbinx - mbinxlo;
+280:   else if(x &gt;= 0.0)
+281:     ix = (int)(x * bininvx) - mbinxlo;
+282:   else
+283:     ix = (int)(x * bininvx) - mbinxlo - 1;
+284: 
+285:   if(y &gt;= yprd)
+286:     iy = (int)((y - yprd) * bininvy) + nbiny - mbinylo;
+287:   else if(y &gt;= 0.0)
+288:     iy = (int)(y * bininvy) - mbinylo;
+289:   else
+290:     iy = (int)(y * bininvy) - mbinylo - 1;
+291: 
+292:   if(z &gt;= zprd)
+293:     iz = (int)((z - zprd) * bininvz) + nbinz - mbinzlo;
+294:   else if(z &gt;= 0.0)
+295:     iz = (int)(z * bininvz) - mbinzlo;
+296:   else
+297:     iz = (int)(z * bininvz) - mbinzlo - 1;
+298: 
+299:   return (iz * mbiny * mbinx + iy * mbinx + ix + 1);
+    </code>
+  </pre>
+  <script>
+function src_onresize () {
+}
+function src_loadhelp (divId) {
+  var e = document.getElementById (divId);
+  if (e != null) {
+    e.setAttribute ("title", "Source code of the loop.<br/>It is extracted using MAQAO core.");
+  }
+}
+  </script>
+</div>
+<div class="panelcontent" id="OV_panel_ldbal">
+  <table style="width:100%;">
+    <tr>
+      <td style="text-align:center;">
+        <select id="ldbal_select" size="1" onchange="set_ldbal_input (this);" autocomplete="off">
+          <option value="regular">Load Distribution</option>
+          <option value="sorted">Sorted Load Distribution</option>
+          <option value="all">Load Distribution All Threads</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+<div style="margin: 10px; overflow-x:auto; overflow-y:hidden;"><div id="chart_cat_84" style="height:500px" ></div></div>
+<script class="code">
+</script>
+  <script>
+function set_ldbal_input (obj) {
+  document.getElementById("chart_cat_84").innerHTML = "";
+  var _width = Math.floor(document.getElementById("chart_cat_84").getBoundingClientRect().width);
+  if (obj.value == "regular") {
+  $(document).ready(function(){
+    var ordinals = ['9608','9618','9617','9616'];
+    var data = [{value: 9.7},{value: 10.22},{value: 10.43},{value: 10.51}];
+    var widthgl  = _width;
+    var widthin  = _width;
+    var heightgl = 400;
+    var heightin = 420;
+    let margin = {
+      top:    10,
+      right:  30,
+      bottom: 20,
+      left:   50
+    },
+    width = widthgl - margin.left - margin.right,
+    height = heightgl - margin.top - margin.bottom,
+    radius = (Math.min(width, height) / 2) - 10,
+    node;
+    const svg = d3.select('#chart_cat_84')
+        .append('svg')
+        .attr('width', widthin)
+        .attr('height', heightin)
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        .call(
+          d3.zoom()
+            .translateExtent([[0,0], [width, height] ])
+            .extent([[0, 0], [width, height] ])
+          .on('zoom', zoom)
+        ).on("dblclick.zoom", null);
+    let x = d3.scaleLinear().range([0, width])
+    let y = d3.scaleLinear().range([height, 0])
+    let color = d3.scaleOrdinal(d3.schemeCategory10)
+    let xScale = x.domain([-1, ordinals.length])
+    let yScale = y.domain([0, d3.max(data, function(d){return d.value})])
+    let xBand = d3.scaleBand().domain(d3.range(-1, ordinals.length)).range([0, width])
+    svg.append('rect')
+      .attr('class', 'zoom-panel')
+      .attr('width', width)
+      .attr('height', height)
+    let xAxis = svg.append('g')
+      .attr('class', 'xAxis')
+      .attr('transform', `translate(0, ${height})`)
+      .call(
+        d3.axisBottom(xScale).tickFormat((d, e) => {
+          return ordinals[d]
+        })
+      );
+    svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," + (height + margin.top + 30) + ")")
+      .style("text-anchor", "middle")
+      .text("MAQAO thread rank");
+    let yAxis = svg.append('g')
+      .attr('class', 'y axis')
+      .call(d3.axisLeft(yScale));
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Coverage");
+    let bars = svg.append('g')
+      .attr('clip-path','url(#my-clip-path)')
+      .selectAll('.bar')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('x', function(d, i){
+        return xScale(i) - xBand.bandwidth()*0.9/2
+      })
+      .attr('y', function(d, i){
+        return yScale(d.value)
+      })
+      .attr('width', xBand.bandwidth()*0.9)
+      .attr('height', function(d){
+        return height - yScale(d.value)
+      })
+    let defs = svg.append('defs')
+      defs.append('clipPath')
+        .attr('id', 'my-clip-path')
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+      let hideTicksWithoutLabel = function() {
+        d3.selectAll('.xAxis .tick text').each(function(d){
+          if(this.innerHTML === '') {
+            this.parentNode.style.display = 'none';
+          }
+        })
+      }
+      function zoom() {
+        if (d3.event.transform.k < 1) {
+          d3.event.transform.k = 1;
+          return;
+        }
+      xAxis.call(
+        d3.axisBottom(d3.event.transform.rescaleX(xScale)).tickFormat((d, e, target) => {
+          if (Math.floor(d) === d3.format(".1f")(d)) return ordinals[Math.floor(d)]
+            return ordinals[d];
+        })
+      )
+      hideTicksWithoutLabel()
+        bars.attr("transform", "translate(" + d3.event.transform.x+",0)scale(" + d3.event.transform.k + ",1)")
+    }
+  });
+  }
+  else if (obj.value == "sorted") {
+  $(document).ready(function(){
+    var ordinals = ['9616','9617','9618','9608'];
+    var data = [{value: 10.51},{value: 10.43},{value: 10.22},{value: 9.7}];
+    var widthgl  = _width;
+    var widthin  = _width;
+    var heightgl = 400;
+    var heightin = 420;
+    let margin = {
+      top:    10,
+      right:  30,
+      bottom: 20,
+      left:   50
+    },
+    width = widthgl - margin.left - margin.right,
+    height = heightgl - margin.top - margin.bottom,
+    radius = (Math.min(width, height) / 2) - 10,
+    node;
+    const svg = d3.select('#chart_cat_84')
+        .append('svg')
+        .attr('width', widthin)
+        .attr('height', heightin)
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        .call(
+          d3.zoom()
+            .translateExtent([[0,0], [width, height] ])
+            .extent([[0, 0], [width, height] ])
+          .on('zoom', zoom)
+        ).on("dblclick.zoom", null);
+    let x = d3.scaleLinear().range([0, width])
+    let y = d3.scaleLinear().range([height, 0])
+    let color = d3.scaleOrdinal(d3.schemeCategory10)
+    let xScale = x.domain([-1, ordinals.length])
+    let yScale = y.domain([0, d3.max(data, function(d){return d.value})])
+    let xBand = d3.scaleBand().domain(d3.range(-1, ordinals.length)).range([0, width])
+    svg.append('rect')
+      .attr('class', 'zoom-panel')
+      .attr('width', width)
+      .attr('height', height)
+    let xAxis = svg.append('g')
+      .attr('class', 'xAxis')
+      .attr('transform', `translate(0, ${height})`)
+      .call(
+        d3.axisBottom(xScale).tickFormat((d, e) => {
+          return ordinals[d]
+        })
+      );
+    svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," + (height + margin.top + 30) + ")")
+      .style("text-anchor", "middle")
+      .text("MAQAO thread rank");
+    let yAxis = svg.append('g')
+      .attr('class', 'y axis')
+      .call(d3.axisLeft(yScale));
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Coverage");
+    let bars = svg.append('g')
+      .attr('clip-path','url(#my-clip-path)')
+      .selectAll('.bar')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('x', function(d, i){
+        return xScale(i) - xBand.bandwidth()*0.9/2
+      })
+      .attr('y', function(d, i){
+        return yScale(d.value)
+      })
+      .attr('width', xBand.bandwidth()*0.9)
+      .attr('height', function(d){
+        return height - yScale(d.value)
+      })
+    let defs = svg.append('defs')
+      defs.append('clipPath')
+        .attr('id', 'my-clip-path')
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+      let hideTicksWithoutLabel = function() {
+        d3.selectAll('.xAxis .tick text').each(function(d){
+          if(this.innerHTML === '') {
+            this.parentNode.style.display = 'none';
+          }
+        })
+      }
+      function zoom() {
+        if (d3.event.transform.k < 1) {
+          d3.event.transform.k = 1;
+          return;
+        }
+      xAxis.call(
+        d3.axisBottom(d3.event.transform.rescaleX(xScale)).tickFormat((d, e, target) => {
+          if (Math.floor(d) === d3.format(".1f")(d)) return ordinals[Math.floor(d)]
+            return ordinals[d];
+        })
+      )
+      hideTicksWithoutLabel()
+        bars.attr("transform", "translate(" + d3.event.transform.x+",0)scale(" + d3.event.transform.k + ",1)")
+    }
+  });
+  }
+  else if (obj.value == "all") {
+  $(document).ready(function(){
+    var ordinals = ['9608','9618','9617','9616'];
+    var data = [{value: 9.7},{value: 10.22},{value: 10.43},{value: 10.51}];
+    var widthgl  = _width;
+    var widthin  = _width;
+    var heightgl = 400;
+    var heightin = 420;
+    let margin = {
+      top:    10,
+      right:  30,
+      bottom: 20,
+      left:   50
+    },
+    width = widthgl - margin.left - margin.right,
+    height = heightgl - margin.top - margin.bottom,
+    radius = (Math.min(width, height) / 2) - 10,
+    node;
+    const svg = d3.select('#chart_cat_84')
+        .append('svg')
+        .attr('width', widthin)
+        .attr('height', heightin)
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        .call(
+          d3.zoom()
+            .translateExtent([[0,0], [width, height] ])
+            .extent([[0, 0], [width, height] ])
+          .on('zoom', zoom)
+        ).on("dblclick.zoom", null);
+    let x = d3.scaleLinear().range([0, width])
+    let y = d3.scaleLinear().range([height, 0])
+    let color = d3.scaleOrdinal(d3.schemeCategory10)
+    let xScale = x.domain([-1, ordinals.length])
+    let yScale = y.domain([0, d3.max(data, function(d){return d.value})])
+    let xBand = d3.scaleBand().domain(d3.range(-1, ordinals.length)).range([0, width])
+    svg.append('rect')
+      .attr('class', 'zoom-panel')
+      .attr('width', width)
+      .attr('height', height)
+    let xAxis = svg.append('g')
+      .attr('class', 'xAxis')
+      .attr('transform', `translate(0, ${height})`)
+      .call(
+        d3.axisBottom(xScale).tickFormat((d, e) => {
+          return ordinals[d]
+        })
+      );
+    svg.append("text")
+      .attr("transform",
+            "translate(" + (width/2) + " ," + (height + margin.top + 30) + ")")
+      .style("text-anchor", "middle")
+      .text("MAQAO thread rank");
+    let yAxis = svg.append('g')
+      .attr('class', 'y axis')
+      .call(d3.axisLeft(yScale));
+    svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Coverage");
+    let bars = svg.append('g')
+      .attr('clip-path','url(#my-clip-path)')
+      .selectAll('.bar')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('x', function(d, i){
+        return xScale(i) - xBand.bandwidth()*0.9/2
+      })
+      .attr('y', function(d, i){
+        return yScale(d.value)
+      })
+      .attr('width', xBand.bandwidth()*0.9)
+      .attr('height', function(d){
+        return height - yScale(d.value)
+      })
+    let defs = svg.append('defs')
+      defs.append('clipPath')
+        .attr('id', 'my-clip-path')
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+      let hideTicksWithoutLabel = function() {
+        d3.selectAll('.xAxis .tick text').each(function(d){
+          if(this.innerHTML === '') {
+            this.parentNode.style.display = 'none';
+          }
+        })
+      }
+      function zoom() {
+        if (d3.event.transform.k < 1) {
+          d3.event.transform.k = 1;
+          return;
+        }
+      xAxis.call(
+        d3.axisBottom(d3.event.transform.rescaleX(xScale)).tickFormat((d, e, target) => {
+          if (Math.floor(d) === d3.format(".1f")(d)) return ordinals[Math.floor(d)]
+            return ordinals[d];
+        })
+      )
+      hideTicksWithoutLabel()
+        bars.attr("transform", "translate(" + d3.event.transform.x+",0)scale(" + d3.event.transform.k + ",1)")
+    }
+  });
+  }
+}
+function ldbal_onresize (panelId) {
+  var obj = document.getElementById ("ldbal_select");
+  set_ldbal_input (obj);
+}
+function ldbal_loadhelp (divId) {
+  var e = document.getElementById (divId);
+  if (e != null) {
+    e.setAttribute ("title", "Load distribution analysis of the function.<br/>It is generated using LPROF results.");
+  }
+}
+  </script>
+</div>
+<div class="panelcontent" id="OV_panel_cqa">
+  <div id="path_selection" style="padding-bottom:15px;" >
+    <table style="width:100%;text-align:center;">
+      <tr>
+        <td>
+          <button type="button" class="tooltip-maqao-button" title="Show previous path" onclick="set_previous_path_cqa ();">&#8592;</button>
+        </td>
+        <td style="border-bottom: 1px solid #16609c;">Path <input id="path_selection_input" type="number" min="1" max="1" value="1" style="width:35px;"> / <span id="path_selection_input_max"></span><button type="button" class="tooltip-maqao-button" title="Show selected path" style="margin-left: 10px;" onclick="set_path_input_cqa ()" >OK</button></td>
+        <td><button type="button" class="tooltip-maqao-button" title="Show next path" onclick="set_next_path_cqa ();">&#8594;</button></td>
+      </tr>
+    </table>
+  </div>
+  <div id="loop_cqa">
+<table><tr><td class="_td_shift_20">Coverage</td><td>10.2 %</td></tr>
+<tr><td class="_td_shift_20">Source file and lines</td><td>neighbor.cpp:80</td></tr>
+<tr><td class="_td_shift_20">Module</td><td>miniMD_openmpi</td></tr>
+</table><br/>The function is defined in /home/matthias/cours/minimd/miniMD/ref/Obj_openmpi/neighbor.cpp:80-299.<br /><br />This function cannot be analyzed: too many paths (81690 paths > max_paths=4). Rerun with -max_paths=81690.<br /><br />This function contains loops. If profiling identifies them as cold, consider removing them by full-unrolling. Otherwise analyze/optimize them.<br /><br />  </div>
+  <script>
+function _set_path_cqa (p, nb_path) {
+  for (var i = 1; i < nb_path + 1; i++) {
+    if (i == p) {
+      if (document.getElementById("loop_static_path_" + i) != null) {
+        document.getElementById("loop_static_path_" + i).style.display = "table";
+      }
+      if (document.getElementById("loop_cqa_path_" + i) != null) {
+        document.getElementById("loop_cqa_path_" + i).style.display = "initial";
+      }
+      if (document.getElementById("cmp_cqa_" + i) != null) {      
+        document.getElementById("cmp_cqa_" + i).style.removeProperty("display");
+      }
+    }
+    else {
+      if (document.getElementById("loop_static_path_" + i) != null) {
+        document.getElementById("loop_static_path_" + i).style.display = "none";
+      }
+      if (document.getElementById("loop_cqa_path_" + i) != null) {
+        document.getElementById("loop_cqa_path_" + i).style.display = "none";
+      }
+      if (document.getElementById("cmp_cqa_" + i) != null) {
+        document.getElementById("cmp_cqa_" + i).style.display = "none";
+      }
+    }
+  }
+  document.getElementById ("main_section_div").dataset.path = p;
+  if (document.getElementById("path_selection_input") != null) {
+    document.getElementById("path_selection_input").value = p;
+  }
+  if (document.getElementById("path_selection_adv_input") != null) {
+    document.getElementById("path_selection_adv_input").value = p;
+  }
+  if (document.getElementById("path_selection_cmp_input") != null) {
+    document.getElementById("path_selection_cmp_input").value = p;
+  }
+}
+function set_path_input_cqa () {
+  var p = document.getElementById("path_selection_input").value;
+  var nb_path = parseInt(document.getElementById("main_section_div").dataset.maxpath);
+  if (1 <= p && p <= nb_path) {
+    _set_path_cqa (p, nb_path);
+  }
+}
+function set_previous_path_cqa () {
+  var p = parseInt(document.getElementById("main_section_div").dataset.path);
+  var nb_path = parseInt(document.getElementById("main_section_div").dataset.maxpath);
+  if (p > 1) {
+    _set_path_cqa (p - 1, nb_path);
+  }
+}
+function set_next_path_cqa () {
+  var p = parseInt(document.getElementById("main_section_div").dataset.path);
+  var nb_path = parseInt(document.getElementById("main_section_div").dataset.maxpath);
+  if (p < nb_path) {
+    _set_path_cqa (p + 1, nb_path);
+  }
+}
+function cqa_onresize ()
+{
+  var cur_path = parseInt (document.getElementById ("main_section_div").dataset.path);
+  var max_path = parseInt (document.getElementById ("main_section_div").dataset.maxpath);
+  document.getElementById ("path_selection_input").max = max_path;
+  document.getElementById ("path_selection_input_max").innerHTML = max_path;
+  _set_path_cqa (cur_path, max_path)
+}
+function cqa_loadhelp (divId) {
+  var e = document.getElementById (divId);
+  if (e != null) {
+    e.setAttribute ("title", "CQA analysis of the object (loop or function).");
+  }
+}
+  </script>
+</div>
+<div class="panelcontent" id="OV_panel_loops">
+<div class="_div_table"><table id="_treed_table_1" class="_treed_table"><tr><th class=" _left">Name</th><th>Coverage (%)</th><th>Time (s)</th></tr>
+<tr id="_tr_1_1" ><td id="_tr_1_1-1"  data-_i="1" data-_j="1"  class=" _left"  style="width:70%;" ><span onclick="_click_treed(this)" style="margin-right:5px;margin-left:0px;" >&#x25BC;</span>Neighbor::build(Atom&)<span onclick="_click_expand(this)" class="span_expand">&#8211;</span></td><td id="_tr_1_1-2"  data-_i="1" data-_j="2"  class=" _centered"  style="width:15%;" ></td><td id="_tr_1_1-3"  data-_i="1" data-_j="3"  class=" _centered"  style="width:15%;" ></td></tr>
+<tr class="_tr_1_1"  id="_tr_1_1_1"  ondblclick="_action_2(this,2,-1, 'Loop 155 - neighbor.cpp:120-299 - miniMD_openmpi');" ><td id="_tr_1_1_1-1"  data-_i="2" data-_j="1"  class=" _left"  style="width:70%;" ><span onclick="_click_treed(this)" style="margin-right:5px;margin-left:15px;" >&#x25BC;</span>Loop 155 - neighbor.cpp:120-299 - miniMD_openmpi<span onclick="_click_expand(this)" class="span_expand">&#8211;</span></td><td id="_tr_1_1_1-2"  data-_i="2" data-_j="2"  class=" _centered"  style="width:15%;" >9.38</td><td id="_tr_1_1_1-3"  data-_i="2" data-_j="3"  class=" _centered"  style="width:15%;" >3.31</td></tr>
+<tr class="_tr_1_1_1"  id="_tr_1_1_1_1"  ondblclick="_action_2(this,3,-1, 'Loop 156 - neighbor.cpp:128-299 - miniMD_openmpi');" ><td id="_tr_1_1_1_1-1"  data-_i="3" data-_j="1"  class=" _left"  style="width:70%;" ><span onclick="_click_treed(this)" style="margin-right:5px;margin-left:30px;" >&#x25BC;</span>Loop 156 - neighbor.cpp:128-299 - miniMD_openmpi<span onclick="_click_expand(this)" class="span_expand">&#8211;</span></td><td id="_tr_1_1_1_1-2"  data-_i="3" data-_j="2"  class=" _centered"  style="width:15%;" >9.38</td><td id="_tr_1_1_1_1-3"  data-_i="3" data-_j="3"  class=" _centered"  style="width:15%;" >3.31</td></tr>
+<tr class="_tr_1_1_1_1"  id="_tr_1_1_1_1_1"  ondblclick="_action_2(this,4,-1, 'Loop 157 - neighbor.cpp:144-179 - miniMD_openmpi');" ><td id="_tr_1_1_1_1_1-1"  data-_i="4" data-_j="1"  class=" _left"  style="width:70%;" ><span onclick="_click_treed(this)" style="margin-right:5px;margin-left:45px;" >&#x25BC;</span>Loop 157 - neighbor.cpp:144-179 - miniMD_openmpi<span onclick="_click_expand(this)" class="span_expand">&#8211;</span></td><td id="_tr_1_1_1_1_1-2"  data-_i="4" data-_j="2"  class=" _centered"  style="width:15%;" >9.38</td><td id="_tr_1_1_1_1_1-3"  data-_i="4" data-_j="3"  class=" _centered"  style="width:15%;" >3.31</td></tr>
+<tr class="_tr_1_1_1_1_1"  id="_tr_1_1_1_1_1_1"  ondblclick="_action_3(this,5,-1, '../loops/binary_159.html');" ><td id="_tr_1_1_1_1_1_1-1"  data-_i="5" data-_j="1"  class=" _left"  style="width:70%;" ><span style="margin-right:10px;margin-left:63px;" >&#x25CB;</span>Loop 159 - neighbor.cpp:168-179 - miniMD_openmpi</td><td id="_tr_1_1_1_1_1_1-2"  data-_i="5" data-_j="2"  class=" _centered"  style="width:15%;" >9.17</td><td id="_tr_1_1_1_1_1_1-3"  data-_i="5" data-_j="3"  class=" _centered"  style="width:15%;" >3.24</td></tr>
+<tr class="_tr_1_1_1_1_1"  id="_tr_1_1_1_1_1_2"  ondblclick="_action_3(this,6,-1, '../loops/binary_158.html');" ><td id="_tr_1_1_1_1_1_2-1"  data-_i="6" data-_j="1"  class=" _left"  style="width:70%;" ><span style="margin-right:10px;margin-left:63px;" >&#x25CB;</span>Loop 158 - neighbor.cpp:150-165 - miniMD_openmpi</td><td id="_tr_1_1_1_1_1_2-2"  data-_i="6" data-_j="2"  class=" _centered"  style="width:15%;" >0.21</td><td id="_tr_1_1_1_1_1_2-3"  data-_i="6" data-_j="3"  class=" _centered"  style="width:15%;" >0.07</td></tr>
+</table></div>
+<script>
+function _action_2 (obj, i, j, p){
+           open("../loops/empty_loop.html?loop="+p+"");
+}
+function _action_3 (obj, i, j, p){
+           open(""+p+"");
+}
+</script>
+  <script>
+function loops_onresize ()
+{
+}
+function loops_loadhelp (divId) {
+  var e = document.getElementById (divId);
+  if (e != null) {
+    e.setAttribute ("title", "Loop hierachy of the function.<br/>It is analyzed using MAQAO core.");
+  }
+}
+  </script>
+</div>
+    <!-- =========================== End Of Storage ============================== -->
+</div>
+<script>
+function extract_panel (selector) {
+  // Open the panel in a new window / tab
+  var url   = new URL(window.location.href);
+  window.open(url.href+"?panel="+selector.value);
+}
+// Resize panels on page size changes
+function _onresize () {
+  var bottom_offset = 160;
+  var w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName("body")[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+  var obj = document.getElementById("main_section_div");
+  if (y - bottom_offset > 0) {
+    obj.style.height = (y - bottom_offset)+"px";
+    obj.style.maxHeight = (y - bottom_offset)+"px";
+  }
+  obj = document.getElementById("leftpanelcontent");
+  if (y - bottom_offset > 0) {
+    obj.style.height = (y - bottom_offset - 37)+"px";
+    obj.style.maxHeight = (y - bottom_offset - 37)+"px";
+  }
+  obj = document.getElementById("rightpanelcontent");
+  if (y - bottom_offset > 0) {
+    obj.style.height = (y - bottom_offset - 37)+"px";
+    obj.style.maxHeight = (y - bottom_offset - 37)+"px";
+  }
+  obj = document.getElementById("dragbar");
+  if (y - bottom_offset > 0) {
+    obj.style.height = (y - bottom_offset - 30)+"px";
+    obj.style.maxHeight = (y - bottom_offset - 30)+"px";
+  }
+  var list = document.getElementsByClassName("_panelcontent");
+  for (var i = 0; i < list.length; i++) {
+    if (y - bottom_offset > 0) {
+      list[i].style.height = (y - bottom_offset - 34)+"px";
+      list[i].style.maxHeight = (y - bottom_offset - 34)+"px";
+    }
+  }
+  {
+    var selector = document.getElementById ("leftpanelselector");
+    var sec = selector.value.substring (6);
+    eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize ()}");
+  }
+  {
+    var selector = document.getElementById ("rightpanelselector");
+    var sec = selector.value.substring (6);
+    eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize ()}");
+  }
+  document.getElementById("drag-right").style.maxWidth = x+"px";
+  document.getElementById("spacer_page_title").style.height = (document.getElementById("page_title").scrollHeight + 20)+"px";
+}
+// Resize some objects at the page loading
+addLoadEvent(function(){
+  _onresize ();
+});
+// Resize some objects when the page size changes
+window.onresize = _onresize;
+// ------------------------------------------------------------------
+// Handle resizable panels
+var left = document.getElementById("drag-left");
+var right = document.getElementById("drag-right");
+var bar = document.getElementById("dragbar");
+const drag = (ev) => {
+  var shreshold = 15;
+  document.selection ? document.selection.empty() : window.getSelection().removeAllRanges();
+  var w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.getElementsByTagName("body")[0],
+      x = w.innerWidth || e.clientWidth || g.clientWidth;
+  var loc = (ev.pageX - bar.offsetWidth / 2);
+  if (loc < shreshold) {
+    left.style.display = "none";
+  }
+  else if (loc > x - shreshold) {
+    right.style.display = "none";
+  }
+  else {
+    left.style.width = (ev.pageX - bar.offsetWidth / 2) + "px";
+    left.style.display = "block";
+    right.style.maxWidth = x - ((ev.pageX - bar.offsetWidth / 2)) + "px";
+    right.style.display = "block";
+  }
+  {
+    var selector = document.getElementById ("leftpanelselector");
+    var sec = selector.value.substring (6);
+    eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize ()}");
+  }
+  {
+    var selector = document.getElementById ("rightpanelselector");
+    var sec = selector.value.substring (6);
+    eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize ()}");
+  }
+}
+bar.addEventListener("mousedown", () => {
+  document.addEventListener("mousemove", drag);
+});
+document.addEventListener("mouseup", () => {
+  document.removeEventListener("mousemove", drag);
+});
+// ------------------------------------------------------------------
+// Change panel content
+function _changepanel (panelId, selector, secSelectorName, helpName) {
+  var panel = document.getElementById (panelId);
+  if (panel != null) {
+    var sec = selector.value.substring (6);
+    // Handle selector disabling
+    var secSelector = document.getElementById (secSelectorName);
+    for (var i = 0; i < secSelector.length; i++) {
+      if (secSelector [i].value == selector.value) {
+        secSelector [i].setAttribute ("disabled", "");
+      } else {
+        secSelector [i].removeAttribute ("disabled");
+      }
+    }
+    
+    var curPanel = document.getElementById("main_section_div").dataset[panelId]
+    document.getElementById (curPanel).innerHTML = document.getElementById (panelId).innerHTML;
+    document.getElementById (panelId).innerHTML = document.getElementById ("OV_"+selector.value).innerHTML;
+    document.getElementById ("OV_"+selector.value).innerHTML = "";
+    eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize (panelId)}");
+    eval ("if (typeof "+sec+"_loadhelp === \"function\") {"+sec+"_loadhelp (helpName)}");
+    document.getElementById("main_section_div").dataset[panelId] = "OV_"+selector.value;
+  }
+}
+// At page loading, handle panel contents
+addLoadEvent(function(){
+  var url   = new URL(window.location.href);
+  var panel = url.searchParams.get("panel");
+  if (panel != null) {
+    // Update page content
+    document.getElementById ("page_title").style.display = "none"; // TODO - sumarize loop
+    document.getElementById ("spacer_page_title").style.display = "none";
+    // Load panel
+    var sec = panel.substring (6);
+    document.getElementById ("main_section_content").classList.remove ("drag-container");
+    document.getElementById ("main_section_content").style.overflow = "auto";
+    document.getElementById ("main_section_content").innerHTML = document.getElementById ("OV_"+panel).innerHTML;
+    document.getElementById ("OV_"+panel).innerHTML = "";
+    eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize (\"rightpanelcontent\")}");
+    eval ("if (typeof "+sec+"_loadhelp === \"function\") {"+sec+"_loadhelp (\"rightpanelhelp\")}");
+  }
+  else {
+    {
+      var selector = document.getElementById ("leftpanelselector");
+      var sec = selector.value.substring (6);
+      document.getElementById ("leftpanelcontent").innerHTML = document.getElementById ("OV_"+selector.value).innerHTML;
+      document.getElementById ("OV_"+selector.value).innerHTML = "";
+      eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize (\"leftpanelcontent\")}");
+      eval ("if (typeof "+sec+"_loadhelp === \"function\") {"+sec+"_loadhelp (\"leftpanelhelp\")}");
+      document.getElementById("main_section_div").dataset.leftpanelcontent = "OV_"+selector.value;
+    }
+    {
+      var selector = document.getElementById ("rightpanelselector");
+      var sec = selector.value.substring (6);
+      document.getElementById ("rightpanelcontent").innerHTML = document.getElementById ("OV_"+selector.value).innerHTML;
+      document.getElementById ("OV_"+selector.value).innerHTML = "";
+      eval ("if (typeof "+sec+"_onresize === \"function\") {"+sec+"_onresize (\"rightpanelcontent\")}");
+      eval ("if (typeof "+sec+"_loadhelp === \"function\") {"+sec+"_loadhelp (\"rightpanelhelp\")}");
+      document.getElementById("main_section_div").dataset.rightpanelcontent = "OV_"+selector.value;
+    }
+  }
+});
+</script>
+<style>
+.drag-container {
+  display: flex;
+  height: 100%;
+}
+.panel-one {
+  width: 40%;
+}
+.panel-two {
+  flex: 1;
+  width: 60%;
+}
+.dragbar {
+  padding: 6px;
+  margin-top: 5px;
+  cursor: col-resize;
+  background-color: #114B79;
+}
+.extract-maqao {
+  background:url("../images/OV_extract_20.png") no-repeat;
+  width:20px;
+  height:20px;
+  float: right;
+  margin-right: 20px;
+}
+</style>
+
+  <div id="MaqaoModal" class="maqao_modal">
+    <div class="maqao_modal-content">
+      <div class="maqao_modal-header">
+        <span class="maqao_close">&times;</span>
+      </div>
+      <div id="maqao_modal-body" class="maqao_modal-body">
+      </div>
+    </div>
+  </div>
+</div><script>
+var modal = document.getElementById('MaqaoModal');
+var span = document.getElementsByClassName("maqao_close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v2 - v1 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+addLoadEvent(function(){
+  document.querySelectorAll('._fixed_table th').forEach(th => th.addEventListener('click', (() => {
+    const table = th.closest('table');
+    // Remove all symbols in header
+    table.querySelectorAll('th').forEach(function (e) {
+      e.firstChild.textContent = "";
+    });
+    // Change the symbol on the clicked header
+    if (this.asc != true) {
+      th.firstChild.textContent = "\u25BC";
+    }
+    else {
+      th.firstChild.textContent = "\u25B2";
+    }
+    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        .forEach(tr => table.appendChild(tr) );
+  })));
+});
+// Fonction for table selector
+function click_table_menu (c) {
+  $("."+c).each(function(index, element) {
+    element.classList.toggle("_tcol_hidden");
+  });
+}
+function set_all_table_menu (obj, opt_ids) {
+  for (i = 0; i < opt_ids.length; i++) {
+    var obj_s = document.getElementById(opt_ids[i]);
+    if (obj.checked == obj_s.checked) {
+      click_table_menu (opt_ids[i]);
+    }
+    if (obj.checked == true) {
+      obj_s.checked = false;
+    } else {
+      obj_s.checked = true;
+    }
+  }
+  if (obj.checked == true) {
+    document.getElementById(obj.id+"_text").innerHTML = "Select all";
+  } else {
+    document.getElementById(obj.id+"_text").innerHTML = "Select none";
+  }
+}
+// Script for accordion box
+function _click_accordion_header(obj) {
+  var content_id = '_accordion_content_' + obj.id.substr (obj.id.lastIndexOf('_') + 1);
+  var content = document.getElementById(content_id);
+  content.classList.toggle('collapsed');
+  obj.classList.toggle('collapsed');
+  obj.parentNode.classList.toggle('collapsed');
+  // Check if the box must be openned ...
+  if (obj.classList.contains ('collapsed'))
+  {
+    obj.firstChild.textContent = "\u25B6";
+  }
+  // or closed.
+  else 
+  {
+    obj.firstChild.textContent = "\u25BC";
+  }
+}
+  // Script for paged table
+function _click_paged_prev(obj) {
+  var pages_content_id = '_paged_tables_page_' + obj.parentNode.parentNode.id.substr (obj.parentNode.parentNode.id.lastIndexOf('_') + 1);
+  var pages_content = document.getElementById(pages_content_id).innerHTML;
+  var max_pages = pages_content.substr (pages_content.lastIndexOf('/') + 1);
+  var cur_page  = pages_content.substring (pages_content.lastIndexOf(' ') + 1, pages_content.lastIndexOf('/'));
+  max_pages = Number (max_pages);
+  cur_page  = Number (cur_page);
+  if (cur_page > 1) {
+    var div_paged = obj.parentNode.parentNode.id;
+    var i;
+    var x = document.getElementsByClassName(div_paged + '_' + (cur_page - 1));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    x = document.getElementsByClassName(div_paged + '_' + (cur_page - 2));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+  document.getElementById(pages_content_id).textContent = "Page " + (cur_page - 1) + "/" + max_pages;
+  }
+}
+function _click_paged_next(obj) {
+  var pages_content_id = '_paged_tables_page_' + obj.parentNode.parentNode.id.substr (obj.parentNode.parentNode.id.lastIndexOf('_') + 1);
+  var pages_content = document.getElementById(pages_content_id).innerHTML;
+  var max_pages = pages_content.substr (pages_content.lastIndexOf('/') + 1);
+  var cur_page  = pages_content.substring (pages_content.lastIndexOf(' ') + 1, pages_content.lastIndexOf('/'));
+  max_pages = Number (max_pages);
+  cur_page  = Number (cur_page);
+  if (cur_page < max_pages) {
+    var div_paged = obj.parentNode.parentNode.id;
+    var i;
+    var x = document.getElementsByClassName(div_paged + '_' + (cur_page - 1));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    x = document.getElementsByClassName(div_paged + '_' + cur_page);
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    document.getElementById(pages_content_id).textContent = "Page " + (cur_page + 1) + "/" + max_pages;
+  }
+}
+// Function for tree table
+function _click_treed(obj) {
+  if (obj.innerHTML == "\u25BA") {
+    obj.textContent = "\u25BC";
+    // Open childs
+    var x = document.getElementsByClassName(obj.parentNode.parentNode.id);
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_treed_hidden');
+    }
+  }
+  else {
+    obj.textContent = "\u25BA";
+    // Close all childs
+    var trs = document.getElementsByTagName('tr');
+    var r   = obj.parentNode.parentNode.id+'_';
+    var re  = new RegExp (r, "g");
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+""
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (! o.classList.contains('_treed_hidden')) {
+          o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BC") {
+          o.firstChild.firstChild.textContent = "\u25BA";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '+';
+        }
+      }
+    }
+    if (obj.parentNode.childNodes.length == 3) {
+      obj.parentNode.childNodes[2].textContent = '+';
+    }
+  }
+}
+function _click_expand (obj) {
+  var trs = document.getElementsByTagName('tr');
+  var r   = obj.parentNode.parentNode.id+'_';
+  var re  = new RegExp (r, "g");
+  // Symbole + => expand all
+  if (obj.textContent == "+") {
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+"";
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (o.classList.contains('_treed_hidden')) {
+           o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BA") {
+          o.firstChild.firstChild.textContent = "\u25BC";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '\u2010';
+        }
+      }
+    }
+    var o = obj.parentNode.parentNode;
+    if (o.firstChild.firstChild.textContent == "\u25BA") {
+      o.firstChild.firstChild.textContent = "\u25BC";
+    }
+    obj.textContent = "\u2010";
+  }
+  // Symbole - => collapse all
+  else {
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+"";
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (! o.classList.contains('_treed_hidden')) {
+           o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BC") {
+          o.firstChild.firstChild.textContent = "\u25BA";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '+';
+        }
+      }
+    }
+    var o = obj.parentNode.parentNode;
+    if (o.firstChild.firstChild.textContent == "\u25BC") {
+      o.firstChild.firstChild.textContent = "\u25BA";
+    }
+    obj.textContent = "+";
+  }
+}
+// Hide unselected tabs
+addLoadEvent(function(){
+  var x = document.getElementsByClassName("_tab_header_li");
+  for (var i = 0; i < x.length; i++) {
+    if (x[i].classList.contains("selected_tab") == false) {
+      var e = document.getElementById (x[i].dataset.tab);
+      e.style.display = "none";
+    }
+  }
+});
+// Change tab
+function change_tab (e, baseId) {
+  // Handle tabs
+  var i = 1;
+  while (true) {
+    var id = baseId + i;
+    var t = document.getElementById (id);
+    if (t == null) {
+      break;
+    }
+    if (id == e.dataset.tab) {
+      t.style.removeProperty("display");
+    }
+    else {
+      t.style.display = "none";
+    }
+    i = i + 1;
+  }
+  // Handle headers
+  $(e).siblings().each( function () {
+    this.classList.remove("selected_tab");
+  });
+  e.classList.add("selected_tab");
+}
+</script>
+</body>
+</html>

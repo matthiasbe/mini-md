@@ -1,0 +1,4 @@
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//force_lj.cpp: 346 - 346
+--------------------------------------------------------------------------------
+
+346:     f[i * PAD + 1] += fiy;

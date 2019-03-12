@@ -1,0 +1,18 @@
+Function Name;Module;Source Info;Time %;Time(s);CPI ratio;
+void ForceLJ::compute_halfneigh_threaded<0, 1>(Atom&, Neighbor&, int);binary;force_lj.cpp:272;81.17;28.20;1.09;
+Neighbor::build(Atom&);binary;neighbor.cpp:80;10.22;3.55;0.62;
+Integrate::initialIntegrate();binary;integrate.cpp:47;2.60;0.90;3.78;
+void ForceLJ::compute_halfneigh_threaded<1, 1>(Atom&, Neighbor&, int);binary;force_lj.cpp:272;1.82;0.63;1.09;
+omp_get_num_procs;libgomp.so.1.0.0;;1.04;0.36;1.92;
+Integrate::finalIntegrate();binary;integrate.cpp:60;1.00;0.35;2.77;
+unknown kernel region;SYSTEM CALL;;0.95;0.33;7.99;
+Atom::pack_reverse(int, int, double*);binary;atom.cpp:173;0.30;0.11;9.21;
+Neighbor::binatoms(Atom&, int);binary;neighbor.cpp:216;0.26;0.09;1.42;
+Atom::unpack_comm(int, int, double*);binary;atom.cpp:161;0.13;0.05;3.51;
+Atom::unpack_reverse(int, int*, double*);binary;atom.cpp:185;0.13;0.05;1.50;
+Atom::sort(Neighbor&);binary;atom.cpp:356;0.13;0.05;3.72;
+Atom::pack_comm(int, int*, double*, int*);binary;atom.cpp:136;0.09;0.03;1.32;
+Comm::borders(Atom&);binary;comm.cpp:747;0.04;0.02;0.75;
+Atom::unpack_border(int, double*);binary;atom.cpp:217;0.04;0.02;10.53;
+Thermo::temperature(Atom&);binary;thermo.cpp:141;0.04;0.02;10.53;
+Atom::pack_border(int, double*, int*);binary;atom.cpp:201;0.04;0.02;2.63;

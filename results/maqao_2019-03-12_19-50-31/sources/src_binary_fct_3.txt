@@ -1,0 +1,89 @@
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//force_lj.cpp: 272 - 357
+--------------------------------------------------------------------------------
+
+272: void ForceLJ::compute_halfneigh_threaded(Atom &atom, Neighbor &neighbor, int me)
+273: {
+274:   MMD_float t_eng_vdwl = 0;
+275:   MMD_float t_virial = 0;
+276: 
+277:   const int nlocal = atom.nlocal;
+278:   const int nall = atom.nlocal + atom.nghost;
+279:   const MMD_float* const x = atom.x;
+280:   MMD_float* const f = atom.f;
+281:   const int* const type = atom.type;
+282: 
+283:   #pragma omp barrier
+284:   // clear force on own and ghost atoms
+285: 
+286:   OMPFORSCHEDULE
+287:   for(int i = 0; i < nall; i++) {
+288:     f[i * PAD + 0] = 0.0;
+289:     f[i * PAD + 1] = 0.0;
+290:     f[i * PAD + 2] = 0.0;
+291:   }
+292: 
+293:   // loop over all neighbors of my atoms
+294:   // store force on both atoms i and j
+295: 
+296:   OMPFORSCHEDULE
+297:   for(int i = 0; i < nlocal; i++) {
+298:     const int* const neighs = &neighbor.neighbors[i * neighbor.maxneighs];
+299:     const int numneighs = neighbor.numneigh[i];
+300:     const MMD_float xtmp = x[i * PAD + 0];
+301:     const MMD_float ytmp = x[i * PAD + 1];
+302:     const MMD_float ztmp = x[i * PAD + 2];
+303:     const int type_i = type[i];
+304:     MMD_float fix = 0.0;
+305:     MMD_float fiy = 0.0;
+306:     MMD_float fiz = 0.0;
+307: 
+308:     for(int k = 0; k < numneighs; k++) {
+309:       const int j = neighs[k];
+310:       const MMD_float delx = xtmp - x[j * PAD + 0];
+311:       const MMD_float dely = ytmp - x[j * PAD + 1];
+312:       const MMD_float delz = ztmp - x[j * PAD + 2];
+313:       const int type_j = type[j];
+314:       const MMD_float rsq = delx * delx + dely * dely + delz * delz;
+315:       const int type_ij = type_i*ntypes+type_j;
+316: 
+317:       if(rsq < cutforcesq[type_ij]) {
+318:         const MMD_float sr2 = 1.0 / rsq;
+319:         const MMD_float sr6 = sr2 * sr2 * sr2 * sigma6[type_ij];
+320:         const MMD_float force = 48.0 * sr6 * (sr6 - 0.5) * sr2 * epsilon[type_ij];
+321: 
+322:         fix += delx * force;
+323:         fiy += dely * force;
+324:         fiz += delz * force;
+325: 
+326:         if(GHOST_NEWTON || j < nlocal) {
+327:           #pragma omp atomic
+328:           f[j * PAD + 0] -= delx * force;
+329:           #pragma omp atomic
+330:           f[j * PAD + 1] -= dely * force;
+331:           #pragma omp atomic
+332:           f[j * PAD + 2] -= delz * force;
+333:         }
+334: 
+335:         if(EVFLAG) {
+336:           const MMD_float scale = (GHOST_NEWTON || j < nlocal) ? 1.0 : 0.5;
+337:           t_eng_vdwl += scale * (4.0 * sr6 * (sr6 - 1.0)) * epsilon[type_ij];
+338:           t_virial += scale * (delx * delx + dely * dely + delz * delz) * force;
+339:         }
+340:       }
+341:     }
+342: 
+343:     #pragma omp atomic
+344:     f[i * PAD + 0] += fix;
+345:     #pragma omp atomic
+346:     f[i * PAD + 1] += fiy;
+347:     #pragma omp atomic
+348:     f[i * PAD + 2] += fiz;
+349:   }
+350: 
+351:   #pragma omp atomic
+352:   eng_vdwl += t_eng_vdwl;
+353:   #pragma omp atomic
+354:   virial += t_virial;
+355: 
+356:   #pragma omp barrier
+357: }

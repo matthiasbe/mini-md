@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en-US"><head><title>ONEVIEW: report one</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="css/themes/redmond_custom/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="css/themes/redmond_custom/jquery.jqplot.min.css" />
+<link rel="stylesheet" type="text/css" href="css/maqao_modal.css" />
+<link rel="stylesheet" type="text/css" href="css/global.css" />
+<link rel="stylesheet" type="text/css" href="css/maqao_menu.css" />
+<script src="js/jquery-1.9.0.min.js" ></script>
+<script src="js/jquery-ui-1.10.3.custom.min.js" ></script>
+<script src="js/grid.locale-en.js" ></script>
+<script src="js/jquery.jqGrid.min.js" ></script>
+<script src="js/d3.min.js" ></script>
+<script class="include" src="js/jquery.jqplot.min.js"></script>
+<script class="include" src="js/jqplot.pieRenderer.min.js"></script>
+<script class="include" src="js/jqplot.barRenderer.min.js"></script>
+<script class="include" src="js/jqplot.categoryAxisRenderer.min.js"></script>
+<script class="include" src="js/jqplot.pointLabels.min.js"></script>
+<script class="include" src="js/jqplot.cursor.min.js"></script>
+<script class="include" src="js/jqplot.canvasTextRenderer.min.js"></script>
+<script class="include" src="js/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script class="include" src="js/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script class="include" src="js/jqplot.enhancedLegendRenderer.min.js"></script>
+<script class="include" src="js/jqplot.highlighter.min.js"></script>
+<script class="include" src="js/maqao_menu.js"></script>
+<script>
+$( function() {
+  $( document ).tooltip({
+    content: function() {
+      if ($(this).hasClass ("tooltip-maqao")
+      ||  $(this).hasClass ("tooltip-maqao-button")) {
+        return $(this).attr('title');
+      }
+    },
+    position: {
+      my: "center bottom-20",
+        at: "center top",
+        using: function( position, feedback ) {
+          $( this ).css( position );
+          $( "<div>" )
+            .addClass( "arrow-tt" )
+            .addClass( feedback.vertical )
+            .addClass( feedback.horizontal )
+            .appendTo( this );
+        }
+      }
+  });
+} );
+
+// Code from https://www.htmlgoodies.com/beyond/javascript/article.php/3724571/Using-Multiple-JavaScript-Onload-Functions.htm
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+</script>
+</head><body>
+<div id="page_title"><img alt="MAQAO" id="maqao_logo" src="images/MAQAO_small_logo.png" /><ul id="maqao_menu"><li><a  href="index.html">Global</a></li><li><a  href="application.html">Application</a></li><li><a  href="fcts_and_loops.html">Functions</a></li><li><a class="_current_page" href="loops_index.html">Loops</a></li><li><a  href="topology.html">Topology</a></li></ul></div>
+<div id="anchor_file_start"></div>
+<div id="maqao_content">
+<div id="spacer_page_title" style="height:100px;" ></div>
+<div class="_fixed_box" ><h3 class="_header">Loops Index<span class="tooltip-maqao-button help-maqao" title="List of profiled loops. Details about metrics can be obtained by moving the cursor on the column header. Rows can be sorted ascending or descending by clicking on the column header. Colors in the coverage column are from red for hot loops to blue for cold loops. Some additionnal columns can be displayed by clicking on the form above the table. Double click on a loop to display its analysis report in a new tab."></span></h3>
+<div class="_content"><div class="_div_table"><div><form>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt5" onclick="click_table_menu('_table20_opt5')" style="margin-left: 30px;  vertical-align: middle;" checked  >Coverage (%)</span>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt6" onclick="click_table_menu('_table20_opt6')" style="margin-left: 30px;  vertical-align: middle;" >Time (s)</span>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt7" onclick="click_table_menu('_table20_opt7')" style="margin-left: 30px;  vertical-align: middle;" >Vectorization Ratio (%)</span>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt8" onclick="click_table_menu('_table20_opt8')" style="margin-left: 30px;  vertical-align: middle;" >Speedup If Clean</span>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt9" onclick="click_table_menu('_table20_opt9')" style="margin-left: 30px;  vertical-align: middle;" >Speedup If FP Vectorized</span>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt10" onclick="click_table_menu('_table20_opt10')" style="margin-left: 30px;  vertical-align: middle;" >Speedup If Fully Vectorized</span>
+<span style='white-space:nowrap;'><input class="input_check_table_menu" type="checkbox" id="_table20_opt_all" onclick="set_all_table_menu(this, ['_table20_opt5','_table20_opt6','_table20_opt7','_table20_opt8','_table20_opt9','_table20_opt10',])" style="margin-left: 30px;  vertical-align: middle;" ><span id="_table20_opt_all_text">Select all</span></span>
+</form></div>
+<table class="_fixed_table"><tr><th class=" _left tooltip-maqao" title="MAQAO loop identifier."><span></span>Loop id</th><th class=" tooltip-maqao" title="Location of the loop in the source file."><span></span>Source Lines</th><th class=" tooltip-maqao" title="Name of the source file that contains the loop."><span></span>Source File</th><th class=" tooltip-maqao" title="Name of the fonction that contains the loop."><span></span>Source Function</th><th class=" _table20_opt5 tooltip-maqao" title="Percentage of the execution time spent in the loop."><span></span>Coverage (%)</th><th class=" _table20_opt6 _tcol_hidden tooltip-maqao" title="Execution time spent in the loop in seconds."><span></span>Time (s)</th><th class=" _table20_opt7 _tcol_hidden tooltip-maqao" title="Percentage of the loop that have been vectorized. The color is red when the value is lower than 70%, orange when the value is between 70% and 90% and green when it is greater than 90%."><span></span>Vectorization Ratio (%)</th><th class=" _table20_opt8 _tcol_hidden tooltip-maqao" title="Optimistic speedup available if the loop is cleaned. This speedup can be achieved by removing all instructions which do not perform any floating-point computation or memory accesses. Instructions used to handle the loop control flow are not included in the instructions set to remove. A light orange color means the speedup is between 1 and 2, a darker orange color means the speedup is greater than 2."><span></span>Speedup If Clean</th><th class=" _table20_opt9 _tcol_hidden tooltip-maqao" title="Optimistic speedup available if the loop is has all its floating point computation vectorized. This speedup can be achived by vectorizing all instructions performing floating point computation. It does not take into account memory accesses. A light orange color means the speedup is between 1 and 2, a darker orange color means the speedup is greater than 2.</li>"><span></span>Speedup If FP Vectorized</th><th class=" _table20_opt10 _tcol_hidden tooltip-maqao" title="Optimistic speedup available if the loop is has all its instructions vectorized. This speedup can be achived by vectorizing all instructions, both floating point computation instructions and memory accesses instructions. A light orange color means the speedup is between 1 and 2, a darker orange color means the speedup is greater than 2;</li>"><span></span>Speedup If Fully Vectorized</th></tr><tr id="_tr_20_1"  ondblclick="_action_48(this,1,-1, 'loops/binary_80.html');" ><td id="_td_20_1_1"  data-_i="1" data-_j="1"  data-_p = "b_charts/binary_80"  class=" _left _centered" >Loop 80</td><td id="_td_20_1_2"  data-_i="1" data-_j="2"  data-_p = "b_charts/binary_80"  class=" _centered" >330-330</td><td id="_td_20_1_3"  data-_i="1" data-_j="3"  data-_p = "b_charts/binary_80"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_1_4"  data-_i="1" data-_j="4"  data-_p = "b_charts/binary_80"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_1_5"  data-_i="1" data-_j="5"  data-_p = "b_charts/binary_80"  class=" _centered _table20_opt5"  style="background:#D85047;" >15.7</td><td id="_td_20_1_6"  data-_i="1" data-_j="6"  data-_p = "b_charts/binary_80"  class=" _centered _table20_opt6 _tcol_hidden" >5.55</td><td id="_td_20_1_7"  data-_i="1" data-_j="7"  data-_p = "b_charts/binary_80"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_1_8"  data-_i="1" data-_j="8"  data-_p = "b_charts/binary_80"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_1_9"  data-_i="1" data-_j="9"  data-_p = "b_charts/binary_80"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_1_10"  data-_i="1" data-_j="10"  data-_p = "b_charts/binary_80"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_2"  ondblclick="_action_48(this,2,-1, 'loops/binary_81.html');" ><td id="_td_20_2_1"  data-_i="2" data-_j="1"  data-_p = "b_charts/binary_81"  class=" _left _centered" >Loop 81</td><td id="_td_20_2_2"  data-_i="2" data-_j="2"  data-_p = "b_charts/binary_81"  class=" _centered" >332-332</td><td id="_td_20_2_3"  data-_i="2" data-_j="3"  data-_p = "b_charts/binary_81"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_2_4"  data-_i="2" data-_j="4"  data-_p = "b_charts/binary_81"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_2_5"  data-_i="2" data-_j="5"  data-_p = "b_charts/binary_81"  class=" _centered _table20_opt5"  style="background:#D05652;" >14.8</td><td id="_td_20_2_6"  data-_i="2" data-_j="6"  data-_p = "b_charts/binary_81"  class=" _centered _table20_opt6 _tcol_hidden" >5.23</td><td id="_td_20_2_7"  data-_i="2" data-_j="7"  data-_p = "b_charts/binary_81"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_2_8"  data-_i="2" data-_j="8"  data-_p = "b_charts/binary_81"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_2_9"  data-_i="2" data-_j="9"  data-_p = "b_charts/binary_81"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_2_10"  data-_i="2" data-_j="10"  data-_p = "b_charts/binary_81"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_3"  ondblclick="_action_48(this,3,-1, 'loops/binary_79.html');" ><td id="_td_20_3_1"  data-_i="3" data-_j="1"  data-_p = "b_charts/binary_79"  class=" _left _centered" >Loop 79</td><td id="_td_20_3_2"  data-_i="3" data-_j="2"  data-_p = "b_charts/binary_79"  class=" _centered" >328-328</td><td id="_td_20_3_3"  data-_i="3" data-_j="3"  data-_p = "b_charts/binary_79"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_3_4"  data-_i="3" data-_j="4"  data-_p = "b_charts/binary_79"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_3_5"  data-_i="3" data-_j="5"  data-_p = "b_charts/binary_79"  class=" _centered _table20_opt5"  style="background:#D05652;" >13.93</td><td id="_td_20_3_6"  data-_i="3" data-_j="6"  data-_p = "b_charts/binary_79"  class=" _centered _table20_opt6 _tcol_hidden" >4.92</td><td id="_td_20_3_7"  data-_i="3" data-_j="7"  data-_p = "b_charts/binary_79"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_3_8"  data-_i="3" data-_j="8"  data-_p = "b_charts/binary_79"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_3_9"  data-_i="3" data-_j="9"  data-_p = "b_charts/binary_79"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_3_10"  data-_i="3" data-_j="10"  data-_p = "b_charts/binary_79"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_4"  ondblclick="_action_48(this,4,-1, 'loops/binary_159.html');" ><td id="_td_20_4_1"  data-_i="4" data-_j="1"  data-_p = "b_charts/binary_159"  class=" _left _centered" >Loop 159</td><td id="_td_20_4_2"  data-_i="4" data-_j="2"  data-_p = "b_charts/binary_159"  class=" _centered" >168-179</td><td id="_td_20_4_3"  data-_i="4" data-_j="3"  data-_p = "b_charts/binary_159"  style="word-break:break-all;" >miniMD_openmpi:neighbor.cpp</td><td id="_td_20_4_4"  data-_i="4" data-_j="4"  data-_p = "b_charts/binary_159"  style="word-break:break-all;" >Neighbor::build</td><td id="_td_20_4_5"  data-_i="4" data-_j="5"  data-_p = "b_charts/binary_159"  class=" _centered _table20_opt5"  style="background:#B66776;" >9.17</td><td id="_td_20_4_6"  data-_i="4" data-_j="6"  data-_p = "b_charts/binary_159"  class=" _centered _table20_opt6 _tcol_hidden" >3.24</td><td id="_td_20_4_7"  data-_i="4" data-_j="7"  data-_p = "b_charts/binary_159"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_4_8"  data-_i="4" data-_j="8"  data-_p = "b_charts/binary_159"  class=" _centered _table20_opt8 _tcol_hidden" >0</td><td id="_td_20_4_9"  data-_i="4" data-_j="9"  data-_p = "b_charts/binary_159"  class=" _centered _table20_opt9 _tcol_hidden" >0</td><td id="_td_20_4_10"  data-_i="4" data-_j="10"  data-_p = "b_charts/binary_159"  class=" _centered _table20_opt10 _tcol_hidden" >0</td></tr>
+<tr id="_tr_20_5"  ondblclick="_action_48(this,5,-1, 'loops/binary_14.html');" ><td id="_td_20_5_1"  data-_i="5" data-_j="1"  data-_p = "b_charts/binary_14"  class=" _left _centered" >Loop 14</td><td id="_td_20_5_2"  data-_i="5" data-_j="2"  data-_p = "b_charts/binary_14"  class=" _centered" >50-55</td><td id="_td_20_5_3"  data-_i="5" data-_j="3"  data-_p = "b_charts/binary_14"  style="word-break:break-all;" >miniMD_openmpi:integrate.cpp</td><td id="_td_20_5_4"  data-_i="5" data-_j="4"  data-_p = "b_charts/binary_14"  style="word-break:break-all;" >Integrate::initialIntegrate</td><td id="_td_20_5_5"  data-_i="5" data-_j="5"  data-_p = "b_charts/binary_14"  class=" _centered _table20_opt5"  style="background:#947FA5;" >2.26</td><td id="_td_20_5_6"  data-_i="5" data-_j="6"  data-_p = "b_charts/binary_14"  class=" _centered _table20_opt6 _tcol_hidden" >0.8</td><td id="_td_20_5_7"  data-_i="5" data-_j="7"  data-_p = "b_charts/binary_14"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_5_8"  data-_i="5" data-_j="8"  data-_p = "b_charts/binary_14"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_5_9"  data-_i="5" data-_j="9"  data-_p = "b_charts/binary_14"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_5_10"  data-_i="5" data-_j="10"  data-_p = "b_charts/binary_14"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_6"  ondblclick="_action_48(this,6,-1, 'loops/binary_15.html');" ><td id="_td_20_6_1"  data-_i="6" data-_j="1"  data-_p = "b_charts/binary_15"  class=" _left _centered" >Loop 15</td><td id="_td_20_6_2"  data-_i="6" data-_j="2"  data-_p = "b_charts/binary_15"  class=" _centered" >63-65</td><td id="_td_20_6_3"  data-_i="6" data-_j="3"  data-_p = "b_charts/binary_15"  style="word-break:break-all;" >miniMD_openmpi:integrate.cpp</td><td id="_td_20_6_4"  data-_i="6" data-_j="4"  data-_p = "b_charts/binary_15"  style="word-break:break-all;" >Integrate::finalIntegrate</td><td id="_td_20_6_5"  data-_i="6" data-_j="5"  data-_p = "b_charts/binary_15"  class=" _centered _table20_opt5"  style="background:#947FA5;" >1.2</td><td id="_td_20_6_6"  data-_i="6" data-_j="6"  data-_p = "b_charts/binary_15"  class=" _centered _table20_opt6 _tcol_hidden" >0.42</td><td id="_td_20_6_7"  data-_i="6" data-_j="7"  data-_p = "b_charts/binary_15"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_6_8"  data-_i="6" data-_j="8"  data-_p = "b_charts/binary_15"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_6_9"  data-_i="6" data-_j="9"  data-_p = "b_charts/binary_15"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_6_10"  data-_i="6" data-_j="10"  data-_p = "b_charts/binary_15"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_7"  ondblclick="_action_48(this,7,-1, 'loops/binary_82.html');" ><td id="_td_20_7_1"  data-_i="7" data-_j="1"  data-_p = "b_charts/binary_82"  class=" _left _centered" >Loop 82</td><td id="_td_20_7_2"  data-_i="7" data-_j="2"  data-_p = "b_charts/binary_82"  class=" _centered" >288-290</td><td id="_td_20_7_3"  data-_i="7" data-_j="3"  data-_p = "b_charts/binary_82"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_7_4"  data-_i="7" data-_j="4"  data-_p = "b_charts/binary_82"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_7_5"  data-_i="7" data-_j="5"  data-_p = "b_charts/binary_82"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.82</td><td id="_td_20_7_6"  data-_i="7" data-_j="6"  data-_p = "b_charts/binary_82"  class=" _centered _table20_opt6 _tcol_hidden" >0.29</td><td id="_td_20_7_7"  data-_i="7" data-_j="7"  data-_p = "b_charts/binary_82"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_7_8"  data-_i="7" data-_j="8"  data-_p = "b_charts/binary_82"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_7_9"  data-_i="7" data-_j="9"  data-_p = "b_charts/binary_82"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_7_10"  data-_i="7" data-_j="10"  data-_p = "b_charts/binary_82"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >4</td></tr>
+<tr id="_tr_20_8"  ondblclick="_action_48(this,8,-1, 'loops/binary_75.html');" ><td id="_td_20_8_1"  data-_i="8" data-_j="1"  data-_p = "b_charts/binary_75"  class=" _left _centered" >Loop 75</td><td id="_td_20_8_2"  data-_i="8" data-_j="2"  data-_p = "b_charts/binary_75"  class=" _centered" >346-346</td><td id="_td_20_8_3"  data-_i="8" data-_j="3"  data-_p = "b_charts/binary_75"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_8_4"  data-_i="8" data-_j="4"  data-_p = "b_charts/binary_75"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_8_5"  data-_i="8" data-_j="5"  data-_p = "b_charts/binary_75"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.7</td><td id="_td_20_8_6"  data-_i="8" data-_j="6"  data-_p = "b_charts/binary_75"  class=" _centered _table20_opt6 _tcol_hidden" >0.25</td><td id="_td_20_8_7"  data-_i="8" data-_j="7"  data-_p = "b_charts/binary_75"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_8_8"  data-_i="8" data-_j="8"  data-_p = "b_charts/binary_75"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_8_9"  data-_i="8" data-_j="9"  data-_p = "b_charts/binary_75"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_8_10"  data-_i="8" data-_j="10"  data-_p = "b_charts/binary_75"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_9"  ondblclick="_action_48(this,9,-1, 'loops/binary_74.html');" ><td id="_td_20_9_1"  data-_i="9" data-_j="1"  data-_p = "b_charts/binary_74"  class=" _left _centered" >Loop 74</td><td id="_td_20_9_2"  data-_i="9" data-_j="2"  data-_p = "b_charts/binary_74"  class=" _centered" >344-344</td><td id="_td_20_9_3"  data-_i="9" data-_j="3"  data-_p = "b_charts/binary_74"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_9_4"  data-_i="9" data-_j="4"  data-_p = "b_charts/binary_74"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_9_5"  data-_i="9" data-_j="5"  data-_p = "b_charts/binary_74"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.66</td><td id="_td_20_9_6"  data-_i="9" data-_j="6"  data-_p = "b_charts/binary_74"  class=" _centered _table20_opt6 _tcol_hidden" >0.23</td><td id="_td_20_9_7"  data-_i="9" data-_j="7"  data-_p = "b_charts/binary_74"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_9_8"  data-_i="9" data-_j="8"  data-_p = "b_charts/binary_74"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_9_9"  data-_i="9" data-_j="9"  data-_p = "b_charts/binary_74"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_9_10"  data-_i="9" data-_j="10"  data-_p = "b_charts/binary_74"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_10"  ondblclick="_action_48(this,10,-1, 'loops/binary_76.html');" ><td id="_td_20_10_1"  data-_i="10" data-_j="1"  data-_p = "b_charts/binary_76"  class=" _left _centered" >Loop 76</td><td id="_td_20_10_2"  data-_i="10" data-_j="2"  data-_p = "b_charts/binary_76"  class=" _centered" >348-348</td><td id="_td_20_10_3"  data-_i="10" data-_j="3"  data-_p = "b_charts/binary_76"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_10_4"  data-_i="10" data-_j="4"  data-_p = "b_charts/binary_76"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<0, 1></td><td id="_td_20_10_5"  data-_i="10" data-_j="5"  data-_p = "b_charts/binary_76"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.63</td><td id="_td_20_10_6"  data-_i="10" data-_j="6"  data-_p = "b_charts/binary_76"  class=" _centered _table20_opt6 _tcol_hidden" >0.22</td><td id="_td_20_10_7"  data-_i="10" data-_j="7"  data-_p = "b_charts/binary_76"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_10_8"  data-_i="10" data-_j="8"  data-_p = "b_charts/binary_76"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_10_9"  data-_i="10" data-_j="9"  data-_p = "b_charts/binary_76"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_10_10"  data-_i="10" data-_j="10"  data-_p = "b_charts/binary_76"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_11"  ondblclick="_action_48(this,11,-1, 'loops/binary_43.html');" ><td id="_td_20_11_1"  data-_i="11" data-_j="1"  data-_p = "b_charts/binary_43"  class=" _left _centered" >Loop 43</td><td id="_td_20_11_2"  data-_i="11" data-_j="2"  data-_p = "b_charts/binary_43"  class=" _centered" >328-328</td><td id="_td_20_11_3"  data-_i="11" data-_j="3"  data-_p = "b_charts/binary_43"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_11_4"  data-_i="11" data-_j="4"  data-_p = "b_charts/binary_43"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<1, 1></td><td id="_td_20_11_5"  data-_i="11" data-_j="5"  data-_p = "b_charts/binary_43"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.5</td><td id="_td_20_11_6"  data-_i="11" data-_j="6"  data-_p = "b_charts/binary_43"  class=" _centered _table20_opt6 _tcol_hidden" >0.18</td><td id="_td_20_11_7"  data-_i="11" data-_j="7"  data-_p = "b_charts/binary_43"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_11_8"  data-_i="11" data-_j="8"  data-_p = "b_charts/binary_43"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_11_9"  data-_i="11" data-_j="9"  data-_p = "b_charts/binary_43"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_11_10"  data-_i="11" data-_j="10"  data-_p = "b_charts/binary_43"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_12"  ondblclick="_action_48(this,12,-1, 'loops/binary_44.html');" ><td id="_td_20_12_1"  data-_i="12" data-_j="1"  data-_p = "b_charts/binary_44"  class=" _left _centered" >Loop 44</td><td id="_td_20_12_2"  data-_i="12" data-_j="2"  data-_p = "b_charts/binary_44"  class=" _centered" >330-330</td><td id="_td_20_12_3"  data-_i="12" data-_j="3"  data-_p = "b_charts/binary_44"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_12_4"  data-_i="12" data-_j="4"  data-_p = "b_charts/binary_44"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<1, 1></td><td id="_td_20_12_5"  data-_i="12" data-_j="5"  data-_p = "b_charts/binary_44"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.5</td><td id="_td_20_12_6"  data-_i="12" data-_j="6"  data-_p = "b_charts/binary_44"  class=" _centered _table20_opt6 _tcol_hidden" >0.18</td><td id="_td_20_12_7"  data-_i="12" data-_j="7"  data-_p = "b_charts/binary_44"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_12_8"  data-_i="12" data-_j="8"  data-_p = "b_charts/binary_44"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_12_9"  data-_i="12" data-_j="9"  data-_p = "b_charts/binary_44"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_12_10"  data-_i="12" data-_j="10"  data-_p = "b_charts/binary_44"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_13"  ondblclick="_action_48(this,13,-1, 'loops/binary_45.html');" ><td id="_td_20_13_1"  data-_i="13" data-_j="1"  data-_p = "b_charts/binary_45"  class=" _left _centered" >Loop 45</td><td id="_td_20_13_2"  data-_i="13" data-_j="2"  data-_p = "b_charts/binary_45"  class=" _centered" >332-332</td><td id="_td_20_13_3"  data-_i="13" data-_j="3"  data-_p = "b_charts/binary_45"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_13_4"  data-_i="13" data-_j="4"  data-_p = "b_charts/binary_45"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<1, 1></td><td id="_td_20_13_5"  data-_i="13" data-_j="5"  data-_p = "b_charts/binary_45"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.49</td><td id="_td_20_13_6"  data-_i="13" data-_j="6"  data-_p = "b_charts/binary_45"  class=" _centered _table20_opt6 _tcol_hidden" >0.17</td><td id="_td_20_13_7"  data-_i="13" data-_j="7"  data-_p = "b_charts/binary_45"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_13_8"  data-_i="13" data-_j="8"  data-_p = "b_charts/binary_45"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_13_9"  data-_i="13" data-_j="9"  data-_p = "b_charts/binary_45"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_13_10"  data-_i="13" data-_j="10"  data-_p = "b_charts/binary_45"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_14"  ondblclick="_action_48(this,14,-1, 'loops/binary_158.html');" ><td id="_td_20_14_1"  data-_i="14" data-_j="1"  data-_p = "b_charts/binary_158"  class=" _left _centered" >Loop 158</td><td id="_td_20_14_2"  data-_i="14" data-_j="2"  data-_p = "b_charts/binary_158"  class=" _centered" >150-165</td><td id="_td_20_14_3"  data-_i="14" data-_j="3"  data-_p = "b_charts/binary_158"  style="word-break:break-all;" >miniMD_openmpi:neighbor.cpp</td><td id="_td_20_14_4"  data-_i="14" data-_j="4"  data-_p = "b_charts/binary_158"  style="word-break:break-all;" >Neighbor::build</td><td id="_td_20_14_5"  data-_i="14" data-_j="5"  data-_p = "b_charts/binary_158"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.21</td><td id="_td_20_14_6"  data-_i="14" data-_j="6"  data-_p = "b_charts/binary_158"  class=" _centered _table20_opt6 _tcol_hidden" >0.07</td><td id="_td_20_14_7"  data-_i="14" data-_j="7"  data-_p = "b_charts/binary_158"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_14_8"  data-_i="14" data-_j="8"  data-_p = "b_charts/binary_158"  class=" _centered _table20_opt8 _tcol_hidden" >0</td><td id="_td_20_14_9"  data-_i="14" data-_j="9"  data-_p = "b_charts/binary_158"  class=" _centered _table20_opt9 _tcol_hidden" >0</td><td id="_td_20_14_10"  data-_i="14" data-_j="10"  data-_p = "b_charts/binary_158"  class=" _centered _table20_opt10 _tcol_hidden" >0</td></tr>
+<tr id="_tr_20_15"  ondblclick="_action_48(this,15,-1, 'loops/binary_209.html');" ><td id="_td_20_15_1"  data-_i="15" data-_j="1"  data-_p = "b_charts/binary_209"  class=" _left _centered" >Loop 209</td><td id="_td_20_15_2"  data-_i="15" data-_j="2"  data-_p = "b_charts/binary_209"  class=" _centered" >824-830</td><td id="_td_20_15_3"  data-_i="15" data-_j="3"  data-_p = "b_charts/binary_209"  style="word-break:break-all;" >miniMD_openmpi:comm.cpp</td><td id="_td_20_15_4"  data-_i="15" data-_j="4"  data-_p = "b_charts/binary_209"  style="word-break:break-all;" >Comm::borders</td><td id="_td_20_15_5"  data-_i="15" data-_j="5"  data-_p = "b_charts/binary_209"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.19</td><td id="_td_20_15_6"  data-_i="15" data-_j="6"  data-_p = "b_charts/binary_209"  class=" _centered _table20_opt6 _tcol_hidden" >0.07</td><td id="_td_20_15_7"  data-_i="15" data-_j="7"  data-_p = "b_charts/binary_209"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_15_8"  data-_i="15" data-_j="8"  data-_p = "b_charts/binary_209"  class=" _centered _table20_opt8 _tcol_hidden" >0</td><td id="_td_20_15_9"  data-_i="15" data-_j="9"  data-_p = "b_charts/binary_209"  class=" _centered _table20_opt9 _tcol_hidden" >0</td><td id="_td_20_15_10"  data-_i="15" data-_j="10"  data-_p = "b_charts/binary_209"  class=" _centered _table20_opt10 _tcol_hidden" >0</td></tr>
+<tr id="_tr_20_16"  ondblclick="_action_48(this,16,-1, 'loops/binary_154.html');" ><td id="_td_20_16_1"  data-_i="16" data-_j="1"  data-_p = "b_charts/binary_154"  class=" _left _centered" >Loop 154</td><td id="_td_20_16_2"  data-_i="16" data-_j="2"  data-_p = "b_charts/binary_154"  class=" _centered" >239-299</td><td id="_td_20_16_3"  data-_i="16" data-_j="3"  data-_p = "b_charts/binary_154"  style="word-break:break-all;" >miniMD_openmpi:neighbor.cpp</td><td id="_td_20_16_4"  data-_i="16" data-_j="4"  data-_p = "b_charts/binary_154"  style="word-break:break-all;" >Neighbor::binatoms</td><td id="_td_20_16_5"  data-_i="16" data-_j="5"  data-_p = "b_charts/binary_154"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.18</td><td id="_td_20_16_6"  data-_i="16" data-_j="6"  data-_p = "b_charts/binary_154"  class=" _centered _table20_opt6 _tcol_hidden" >0.06</td><td id="_td_20_16_7"  data-_i="16" data-_j="7"  data-_p = "b_charts/binary_154"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_16_8"  data-_i="16" data-_j="8"  data-_p = "b_charts/binary_154"  class=" _centered _table20_opt8 _tcol_hidden" >0</td><td id="_td_20_16_9"  data-_i="16" data-_j="9"  data-_p = "b_charts/binary_154"  class=" _centered _table20_opt9 _tcol_hidden" >0</td><td id="_td_20_16_10"  data-_i="16" data-_j="10"  data-_p = "b_charts/binary_154"  class=" _centered _table20_opt10 _tcol_hidden" >0</td></tr>
+<tr id="_tr_20_17"  ondblclick="_action_48(this,17,-1, 'loops/binary_25.html');" ><td id="_td_20_17_1"  data-_i="17" data-_j="1"  data-_p = "b_charts/binary_25"  class=" _left _centered" >Loop 25</td><td id="_td_20_17_2"  data-_i="17" data-_j="2"  data-_p = "b_charts/binary_25"  class=" _centered" >191-193</td><td id="_td_20_17_3"  data-_i="17" data-_j="3"  data-_p = "b_charts/binary_25"  style="word-break:break-all;" >miniMD_openmpi:atom.cpp</td><td id="_td_20_17_4"  data-_i="17" data-_j="4"  data-_p = "b_charts/binary_25"  style="word-break:break-all;" >Atom::unpack_reverse</td><td id="_td_20_17_5"  data-_i="17" data-_j="5"  data-_p = "b_charts/binary_25"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.18</td><td id="_td_20_17_6"  data-_i="17" data-_j="6"  data-_p = "b_charts/binary_25"  class=" _centered _table20_opt6 _tcol_hidden" >0.07</td><td id="_td_20_17_7"  data-_i="17" data-_j="7"  data-_p = "b_charts/binary_25"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_17_8"  data-_i="17" data-_j="8"  data-_p = "b_charts/binary_25"  class=" _centered _table20_opt8 _tcol_hidden"  style="background:#FFCC99" >1.33</td><td id="_td_20_17_9"  data-_i="17" data-_j="9"  data-_p = "b_charts/binary_25"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.23</td><td id="_td_20_17_10"  data-_i="17" data-_j="10"  data-_p = "b_charts/binary_25"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_18"  ondblclick="_action_48(this,18,-1, 'loops/binary_24.html');" ><td id="_td_20_18_1"  data-_i="18" data-_j="1"  data-_p = "b_charts/binary_24"  class=" _left _centered" >Loop 24</td><td id="_td_20_18_2"  data-_i="18" data-_j="2"  data-_p = "b_charts/binary_24"  class=" _centered" >178-180</td><td id="_td_20_18_3"  data-_i="18" data-_j="3"  data-_p = "b_charts/binary_24"  style="word-break:break-all;" >miniMD_openmpi:atom.cpp</td><td id="_td_20_18_4"  data-_i="18" data-_j="4"  data-_p = "b_charts/binary_24"  style="word-break:break-all;" >Atom::pack_reverse</td><td id="_td_20_18_5"  data-_i="18" data-_j="5"  data-_p = "b_charts/binary_24"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.17</td><td id="_td_20_18_6"  data-_i="18" data-_j="6"  data-_p = "b_charts/binary_24"  class=" _centered _table20_opt6 _tcol_hidden" >0.06</td><td id="_td_20_18_7"  data-_i="18" data-_j="7"  data-_p = "b_charts/binary_24"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_18_8"  data-_i="18" data-_j="8"  data-_p = "b_charts/binary_24"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_18_9"  data-_i="18" data-_j="9"  data-_p = "b_charts/binary_24"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_18_10"  data-_i="18" data-_j="10"  data-_p = "b_charts/binary_24"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_19"  ondblclick="_action_48(this,19,-1, 'loops/binary_27.html');" ><td id="_td_20_19_1"  data-_i="19" data-_j="1"  data-_p = "b_charts/binary_27"  class=" _left _centered" >Loop 27</td><td id="_td_20_19_2"  data-_i="19" data-_j="2"  data-_p = "b_charts/binary_27"  class=" _centered" >394-403</td><td id="_td_20_19_3"  data-_i="19" data-_j="3"  data-_p = "b_charts/binary_27"  style="word-break:break-all;" >miniMD_openmpi:atom.cpp</td><td id="_td_20_19_4"  data-_i="19" data-_j="4"  data-_p = "b_charts/binary_27"  style="word-break:break-all;" >Atom::sort</td><td id="_td_20_19_5"  data-_i="19" data-_j="5"  data-_p = "b_charts/binary_27"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.16</td><td id="_td_20_19_6"  data-_i="19" data-_j="6"  data-_p = "b_charts/binary_27"  class=" _centered _table20_opt6 _tcol_hidden" >0.06</td><td id="_td_20_19_7"  data-_i="19" data-_j="7"  data-_p = "b_charts/binary_27"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_19_8"  data-_i="19" data-_j="8"  data-_p = "b_charts/binary_27"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_19_9"  data-_i="19" data-_j="9"  data-_p = "b_charts/binary_27"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_19_10"  data-_i="19" data-_j="10"  data-_p = "b_charts/binary_27"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2.34</td></tr>
+<tr id="_tr_20_20"  ondblclick="_action_48(this,20,-1, 'loops/binary_21.html');" ><td id="_td_20_20_1"  data-_i="20" data-_j="1"  data-_p = "b_charts/binary_21"  class=" _left _centered" >Loop 21</td><td id="_td_20_20_2"  data-_i="20" data-_j="2"  data-_p = "b_charts/binary_21"  class=" _centered" >153-155</td><td id="_td_20_20_3"  data-_i="20" data-_j="3"  data-_p = "b_charts/binary_21"  style="word-break:break-all;" >miniMD_openmpi:atom.cpp</td><td id="_td_20_20_4"  data-_i="20" data-_j="4"  data-_p = "b_charts/binary_21"  style="word-break:break-all;" >Atom::pack_comm</td><td id="_td_20_20_5"  data-_i="20" data-_j="5"  data-_p = "b_charts/binary_21"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.14</td><td id="_td_20_20_6"  data-_i="20" data-_j="6"  data-_p = "b_charts/binary_21"  class=" _centered _table20_opt6 _tcol_hidden" >0.05</td><td id="_td_20_20_7"  data-_i="20" data-_j="7"  data-_p = "b_charts/binary_21"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_20_8"  data-_i="20" data-_j="8"  data-_p = "b_charts/binary_21"  class=" _centered _table20_opt8 _tcol_hidden"  style="background:#FFCC99" >1.25</td><td id="_td_20_20_9"  data-_i="20" data-_j="9"  data-_p = "b_charts/binary_21"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.15</td><td id="_td_20_20_10"  data-_i="20" data-_j="10"  data-_p = "b_charts/binary_21"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_21"  ondblclick="_action_48(this,21,-1, 'loops/binary_23.html');" ><td id="_td_20_21_1"  data-_i="21" data-_j="1"  data-_p = "b_charts/binary_23"  class=" _left _centered" >Loop 23</td><td id="_td_20_21_2"  data-_i="21" data-_j="2"  data-_p = "b_charts/binary_23"  class=" _centered" >166-168</td><td id="_td_20_21_3"  data-_i="21" data-_j="3"  data-_p = "b_charts/binary_23"  style="word-break:break-all;" >miniMD_openmpi:atom.cpp</td><td id="_td_20_21_4"  data-_i="21" data-_j="4"  data-_p = "b_charts/binary_23"  style="word-break:break-all;" >Atom::unpack_comm</td><td id="_td_20_21_5"  data-_i="21" data-_j="5"  data-_p = "b_charts/binary_23"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.11</td><td id="_td_20_21_6"  data-_i="21" data-_j="6"  data-_p = "b_charts/binary_23"  class=" _centered _table20_opt6 _tcol_hidden" >0.04</td><td id="_td_20_21_7"  data-_i="21" data-_j="7"  data-_p = "b_charts/binary_23"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_21_8"  data-_i="21" data-_j="8"  data-_p = "b_charts/binary_23"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_21_9"  data-_i="21" data-_j="9"  data-_p = "b_charts/binary_23"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_21_10"  data-_i="21" data-_j="10"  data-_p = "b_charts/binary_23"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_22"  ondblclick="_action_48(this,22,-1, 'loops/binary_263.html');" ><td id="_td_20_22_1"  data-_i="22" data-_j="1"  data-_p = "b_charts/binary_263"  class=" _left _centered" >Loop 263</td><td id="_td_20_22_2"  data-_i="22" data-_j="2"  data-_p = "b_charts/binary_263"  class=" _centered" >349-515</td><td id="_td_20_22_3"  data-_i="22" data-_j="3"  data-_p = "b_charts/binary_263"  style="word-break:break-all;" >miniMD_openmpi:setup.cpp</td><td id="_td_20_22_4"  data-_i="22" data-_j="4"  data-_p = "b_charts/binary_263"  style="word-break:break-all;" >create_atoms</td><td id="_td_20_22_5"  data-_i="22" data-_j="5"  data-_p = "b_charts/binary_263"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.08</td><td id="_td_20_22_6"  data-_i="22" data-_j="6"  data-_p = "b_charts/binary_263"  class=" _centered _table20_opt6 _tcol_hidden" >0.03</td><td id="_td_20_22_7"  data-_i="22" data-_j="7"  data-_p = "b_charts/binary_263"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_22_8"  data-_i="22" data-_j="8"  data-_p = "b_charts/binary_263"  class=" _centered _table20_opt8 _tcol_hidden" >0</td><td id="_td_20_22_9"  data-_i="22" data-_j="9"  data-_p = "b_charts/binary_263"  class=" _centered _table20_opt9 _tcol_hidden" >0</td><td id="_td_20_22_10"  data-_i="22" data-_j="10"  data-_p = "b_charts/binary_263"  class=" _centered _table20_opt10 _tcol_hidden" >0</td></tr>
+<tr id="_tr_20_23"  ondblclick="_action_48(this,23,-1, 'loops/binary_20.html');" ><td id="_td_20_23_1"  data-_i="23" data-_j="1"  data-_p = "b_charts/binary_20"  class=" _left _centered" >Loop 20</td><td id="_td_20_23_2"  data-_i="23" data-_j="2"  data-_p = "b_charts/binary_20"  class=" _centered" >110-120</td><td id="_td_20_23_3"  data-_i="23" data-_j="3"  data-_p = "b_charts/binary_20"  style="word-break:break-all;" >miniMD_openmpi:atom.cpp</td><td id="_td_20_23_4"  data-_i="23" data-_j="4"  data-_p = "b_charts/binary_20"  style="word-break:break-all;" >Atom::pbc</td><td id="_td_20_23_5"  data-_i="23" data-_j="5"  data-_p = "b_charts/binary_20"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.07</td><td id="_td_20_23_6"  data-_i="23" data-_j="6"  data-_p = "b_charts/binary_20"  class=" _centered _table20_opt6 _tcol_hidden" >0.03</td><td id="_td_20_23_7"  data-_i="23" data-_j="7"  data-_p = "b_charts/binary_20"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_23_8"  data-_i="23" data-_j="8"  data-_p = "b_charts/binary_20"  class=" _centered _table20_opt8 _tcol_hidden" >0</td><td id="_td_20_23_9"  data-_i="23" data-_j="9"  data-_p = "b_charts/binary_20"  class=" _centered _table20_opt9 _tcol_hidden" >0</td><td id="_td_20_23_10"  data-_i="23" data-_j="10"  data-_p = "b_charts/binary_20"  class=" _centered _table20_opt10 _tcol_hidden" >0</td></tr>
+<tr id="_tr_20_24"  ondblclick="_action_48(this,24,-1, 'loops/binary_46.html');" ><td id="_td_20_24_1"  data-_i="24" data-_j="1"  data-_p = "b_charts/binary_46"  class=" _left _centered" >Loop 46</td><td id="_td_20_24_2"  data-_i="24" data-_j="2"  data-_p = "b_charts/binary_46"  class=" _centered" >288-290</td><td id="_td_20_24_3"  data-_i="24" data-_j="3"  data-_p = "b_charts/binary_46"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_24_4"  data-_i="24" data-_j="4"  data-_p = "b_charts/binary_46"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<1, 1></td><td id="_td_20_24_5"  data-_i="24" data-_j="5"  data-_p = "b_charts/binary_46"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.03</td><td id="_td_20_24_6"  data-_i="24" data-_j="6"  data-_p = "b_charts/binary_46"  class=" _centered _table20_opt6 _tcol_hidden" >0.01</td><td id="_td_20_24_7"  data-_i="24" data-_j="7"  data-_p = "b_charts/binary_46"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_24_8"  data-_i="24" data-_j="8"  data-_p = "b_charts/binary_46"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_24_9"  data-_i="24" data-_j="9"  data-_p = "b_charts/binary_46"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_24_10"  data-_i="24" data-_j="10"  data-_p = "b_charts/binary_46"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >4</td></tr>
+<tr id="_tr_20_25"  ondblclick="_action_48(this,25,-1, 'loops/binary_39.html');" ><td id="_td_20_25_1"  data-_i="25" data-_j="1"  data-_p = "b_charts/binary_39"  class=" _left _centered" >Loop 39</td><td id="_td_20_25_2"  data-_i="25" data-_j="2"  data-_p = "b_charts/binary_39"  class=" _centered" >346-346</td><td id="_td_20_25_3"  data-_i="25" data-_j="3"  data-_p = "b_charts/binary_39"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_25_4"  data-_i="25" data-_j="4"  data-_p = "b_charts/binary_39"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<1, 1></td><td id="_td_20_25_5"  data-_i="25" data-_j="5"  data-_p = "b_charts/binary_39"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.03</td><td id="_td_20_25_6"  data-_i="25" data-_j="6"  data-_p = "b_charts/binary_39"  class=" _centered _table20_opt6 _tcol_hidden" >0.01</td><td id="_td_20_25_7"  data-_i="25" data-_j="7"  data-_p = "b_charts/binary_39"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_25_8"  data-_i="25" data-_j="8"  data-_p = "b_charts/binary_39"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_25_9"  data-_i="25" data-_j="9"  data-_p = "b_charts/binary_39"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_25_10"  data-_i="25" data-_j="10"  data-_p = "b_charts/binary_39"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_26"  ondblclick="_action_48(this,26,-1, 'loops/binary_40.html');" ><td id="_td_20_26_1"  data-_i="26" data-_j="1"  data-_p = "b_charts/binary_40"  class=" _left _centered" >Loop 40</td><td id="_td_20_26_2"  data-_i="26" data-_j="2"  data-_p = "b_charts/binary_40"  class=" _centered" >348-348</td><td id="_td_20_26_3"  data-_i="26" data-_j="3"  data-_p = "b_charts/binary_40"  style="word-break:break-all;" >miniMD_openmpi:force_lj.cpp</td><td id="_td_20_26_4"  data-_i="26" data-_j="4"  data-_p = "b_charts/binary_40"  style="word-break:break-all;" >void ForceLJ::compute_halfneigh_threaded<1, 1></td><td id="_td_20_26_5"  data-_i="26" data-_j="5"  data-_p = "b_charts/binary_40"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.01</td><td id="_td_20_26_6"  data-_i="26" data-_j="6"  data-_p = "b_charts/binary_40"  class=" _centered _table20_opt6 _tcol_hidden" >0.01</td><td id="_td_20_26_7"  data-_i="26" data-_j="7"  data-_p = "b_charts/binary_40"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF3333" >0</td><td id="_td_20_26_8"  data-_i="26" data-_j="8"  data-_p = "b_charts/binary_40"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_26_9"  data-_i="26" data-_j="9"  data-_p = "b_charts/binary_40"  class=" _centered _table20_opt9 _tcol_hidden"  style="background:#FFCC99" >1.64</td><td id="_td_20_26_10"  data-_i="26" data-_j="10"  data-_p = "b_charts/binary_40"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FF950E" >2</td></tr>
+<tr id="_tr_20_27"  ondblclick="_action_48(this,27,-1, 'loops/binary_166.html');" ><td id="_td_20_27_1"  data-_i="27" data-_j="1"  data-_p = "b_charts/binary_166"  class=" _left _centered" >Loop 166</td><td id="_td_20_27_2"  data-_i="27" data-_j="2"  data-_p = "b_charts/binary_166"  class=" _centered" >153-156</td><td id="_td_20_27_3"  data-_i="27" data-_j="3"  data-_p = "b_charts/binary_166"  style="word-break:break-all;" >miniMD_openmpi:thermo.cpp</td><td id="_td_20_27_4"  data-_i="27" data-_j="4"  data-_p = "b_charts/binary_166"  style="word-break:break-all;" >Thermo::temperature</td><td id="_td_20_27_5"  data-_i="27" data-_j="5"  data-_p = "b_charts/binary_166"  class=" _centered _table20_opt5"  style="background:#7B90C8;" >0.01</td><td id="_td_20_27_6"  data-_i="27" data-_j="6"  data-_p = "b_charts/binary_166"  class=" _centered _table20_opt6 _tcol_hidden" >0.01</td><td id="_td_20_27_7"  data-_i="27" data-_j="7"  data-_p = "b_charts/binary_166"  class=" _centered _table20_opt7 _tcol_hidden"  style="background:#FF950E" >88.24</td><td id="_td_20_27_8"  data-_i="27" data-_j="8"  data-_p = "b_charts/binary_166"  class=" _centered _table20_opt8 _tcol_hidden" >1</td><td id="_td_20_27_9"  data-_i="27" data-_j="9"  data-_p = "b_charts/binary_166"  class=" _centered _table20_opt9 _tcol_hidden" >1</td><td id="_td_20_27_10"  data-_i="27" data-_j="10"  data-_p = "b_charts/binary_166"  class=" _centered _table20_opt10 _tcol_hidden"  style="background:#FFCC99" >1.16</td></tr>
+</table></div><script>
+function _action_48 (obj, i, j, p){
+           open(""+p+"");
+}
+</script>
+<style>
+#mctxMenu2 {
+  display:none;
+  z-index:100;
+}
+</style>
+<mrmenu id="mctxMenu2">
+  <mrmenu id="mctxMenu2_1" title = "Load Distribution" onclick="_action_49('_p', '_p2_1')" oncontextmenu="_action_49('_p', '_p2_1')" ></mrmenu>
+  <mrmenu id="mctxMenu2_2" title = "Sorted Load Distribution" onclick="_action_50('_p', '_p2_2')" oncontextmenu="_action_50('_p', '_p2_2')" ></mrmenu>
+  <mrmenu id="mctxMenu2_3" title = "Load Distribution All Threads" onclick="_action_51('_p', '_p2_3')" oncontextmenu="_action_51('_p', '_p2_3')" ></mrmenu>
+</mrmenu>
+<script>
+var _global_elem;
+var _ids;
+
+document.getElementById("mctxMenu2").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu2_1").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu2_2").addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById("mctxMenu2_3").addEventListener('contextmenu', event => event.preventDefault());
+
+_ids = ["_tr_20_1", "_tr_20_2", "_tr_20_3", "_tr_20_4", "_tr_20_5", "_tr_20_6", "_tr_20_7", "_tr_20_8", "_tr_20_9", "_tr_20_10", "_tr_20_11", "_tr_20_12", "_tr_20_13", "_tr_20_14", "_tr_20_15", "_tr_20_16", "_tr_20_17", "_tr_20_18", "_tr_20_19", "_tr_20_20", "_tr_20_21", "_tr_20_22", "_tr_20_23", "_tr_20_24", "_tr_20_25", "_tr_20_26", "_tr_20_27"];
+for (var i = 0; i < _ids.length; i++) {
+  var elem = document.getElementById(_ids[i]);
+  elem.addEventListener("contextmenu",function(event){
+    event.preventDefault();
+    var ctxMenu = document.getElementById("mctxMenu2");
+    ctxMenu.style.display = "block";
+    ctxMenu.style.left = (event.pageX - 10)+"px";
+    ctxMenu.style.top = (event.pageY - 10)+"px";
+    _global_elem = event.target || event.srcElement;
+  },false);
+  document.addEventListener("click",function(event){
+    var ctxMenu = document.getElementById("mctxMenu2");
+    ctxMenu.style.display = "";
+    ctxMenu.style.left = "";
+    ctxMenu.style.top = "";
+  },false);
+}
+
+function _action_49 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\""+_global_elem.dataset._p+".html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_50 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\""+_global_elem.dataset._p+"_sorted.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+function _action_51 (p, pm){
+           document.getElementById("maqao_modal-body").innerHTML="<object id=\"maqao_modal-body_content\" type=\"text/html\" data=\""+_global_elem.dataset._p+"_all.html\"></object>";
+           var modal = document.getElementById('MaqaoModal');
+           modal.style.display = "block";
+}
+</script>
+<script>
+addLoadEvent(function(){
+  var boxs_on  = ["_table20_opt_all","_table20_opt5", ];
+  var boxs_off = ["_table20_opt6", "_table20_opt7", "_table20_opt8", "_table20_opt9", "_table20_opt10", ];
+  for (var i = 0; i < boxs_on.length; i++) {
+    var obj = document.getElementById(boxs_on[i]).checked = true;
+  }
+  for (var i = 0; i < boxs_off.length; i++) {
+    var obj = document.getElementById(boxs_off[i]).checked = false;
+  }
+});
+</script>
+</div></div><script>
+function _onresize () {
+  document.getElementById("spacer_page_title").style.height = (document.getElementById("page_title").scrollHeight + 20)+"px";
+}
+window.onresize = _onresize;
+</script>
+
+  <div id="MaqaoModal" class="maqao_modal">
+    <div class="maqao_modal-content">
+      <div class="maqao_modal-header">
+        <span class="maqao_close">&times;</span>
+      </div>
+      <div id="maqao_modal-body" class="maqao_modal-body">
+      </div>
+    </div>
+  </div>
+</div><script>
+var modal = document.getElementById('MaqaoModal');
+var span = document.getElementsByClassName("maqao_close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v2 - v1 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+addLoadEvent(function(){
+  document.querySelectorAll('._fixed_table th').forEach(th => th.addEventListener('click', (() => {
+    const table = th.closest('table');
+    // Remove all symbols in header
+    table.querySelectorAll('th').forEach(function (e) {
+      e.firstChild.textContent = "";
+    });
+    // Change the symbol on the clicked header
+    if (this.asc != true) {
+      th.firstChild.textContent = "\u25BC";
+    }
+    else {
+      th.firstChild.textContent = "\u25B2";
+    }
+    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        .forEach(tr => table.appendChild(tr) );
+  })));
+});
+// Fonction for table selector
+function click_table_menu (c) {
+  $("."+c).each(function(index, element) {
+    element.classList.toggle("_tcol_hidden");
+  });
+}
+function set_all_table_menu (obj, opt_ids) {
+  for (i = 0; i < opt_ids.length; i++) {
+    var obj_s = document.getElementById(opt_ids[i]);
+    if (obj.checked == obj_s.checked) {
+      click_table_menu (opt_ids[i]);
+    }
+    if (obj.checked == true) {
+      obj_s.checked = false;
+    } else {
+      obj_s.checked = true;
+    }
+  }
+  if (obj.checked == true) {
+    document.getElementById(obj.id+"_text").innerHTML = "Select all";
+  } else {
+    document.getElementById(obj.id+"_text").innerHTML = "Select none";
+  }
+}
+// Script for accordion box
+function _click_accordion_header(obj) {
+  var content_id = '_accordion_content_' + obj.id.substr (obj.id.lastIndexOf('_') + 1);
+  var content = document.getElementById(content_id);
+  content.classList.toggle('collapsed');
+  obj.classList.toggle('collapsed');
+  obj.parentNode.classList.toggle('collapsed');
+  // Check if the box must be openned ...
+  if (obj.classList.contains ('collapsed'))
+  {
+    obj.firstChild.textContent = "\u25B6";
+  }
+  // or closed.
+  else 
+  {
+    obj.firstChild.textContent = "\u25BC";
+  }
+}
+  // Script for paged table
+function _click_paged_prev(obj) {
+  var pages_content_id = '_paged_tables_page_' + obj.parentNode.parentNode.id.substr (obj.parentNode.parentNode.id.lastIndexOf('_') + 1);
+  var pages_content = document.getElementById(pages_content_id).innerHTML;
+  var max_pages = pages_content.substr (pages_content.lastIndexOf('/') + 1);
+  var cur_page  = pages_content.substring (pages_content.lastIndexOf(' ') + 1, pages_content.lastIndexOf('/'));
+  max_pages = Number (max_pages);
+  cur_page  = Number (cur_page);
+  if (cur_page > 1) {
+    var div_paged = obj.parentNode.parentNode.id;
+    var i;
+    var x = document.getElementsByClassName(div_paged + '_' + (cur_page - 1));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    x = document.getElementsByClassName(div_paged + '_' + (cur_page - 2));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+  document.getElementById(pages_content_id).textContent = "Page " + (cur_page - 1) + "/" + max_pages;
+  }
+}
+function _click_paged_next(obj) {
+  var pages_content_id = '_paged_tables_page_' + obj.parentNode.parentNode.id.substr (obj.parentNode.parentNode.id.lastIndexOf('_') + 1);
+  var pages_content = document.getElementById(pages_content_id).innerHTML;
+  var max_pages = pages_content.substr (pages_content.lastIndexOf('/') + 1);
+  var cur_page  = pages_content.substring (pages_content.lastIndexOf(' ') + 1, pages_content.lastIndexOf('/'));
+  max_pages = Number (max_pages);
+  cur_page  = Number (cur_page);
+  if (cur_page < max_pages) {
+    var div_paged = obj.parentNode.parentNode.id;
+    var i;
+    var x = document.getElementsByClassName(div_paged + '_' + (cur_page - 1));
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    x = document.getElementsByClassName(div_paged + '_' + cur_page);
+    for (i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_paged_hidden');
+    }
+    document.getElementById(pages_content_id).textContent = "Page " + (cur_page + 1) + "/" + max_pages;
+  }
+}
+// Function for tree table
+function _click_treed(obj) {
+  if (obj.innerHTML == "\u25BA") {
+    obj.textContent = "\u25BC";
+    // Open childs
+    var x = document.getElementsByClassName(obj.parentNode.parentNode.id);
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.toggle('_treed_hidden');
+    }
+  }
+  else {
+    obj.textContent = "\u25BA";
+    // Close all childs
+    var trs = document.getElementsByTagName('tr');
+    var r   = obj.parentNode.parentNode.id+'_';
+    var re  = new RegExp (r, "g");
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+""
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (! o.classList.contains('_treed_hidden')) {
+          o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BC") {
+          o.firstChild.firstChild.textContent = "\u25BA";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '+';
+        }
+      }
+    }
+    if (obj.parentNode.childNodes.length == 3) {
+      obj.parentNode.childNodes[2].textContent = '+';
+    }
+  }
+}
+function _click_expand (obj) {
+  var trs = document.getElementsByTagName('tr');
+  var r   = obj.parentNode.parentNode.id+'_';
+  var re  = new RegExp (r, "g");
+  // Symbole + => expand all
+  if (obj.textContent == "+") {
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+"";
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (o.classList.contains('_treed_hidden')) {
+           o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BA") {
+          o.firstChild.firstChild.textContent = "\u25BC";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '\u2010';
+        }
+      }
+    }
+    var o = obj.parentNode.parentNode;
+    if (o.firstChild.firstChild.textContent == "\u25BA") {
+      o.firstChild.firstChild.textContent = "\u25BC";
+    }
+    obj.textContent = "\u2010";
+  }
+  // Symbole - => collapse all
+  else {
+    for (var i = 0; i < trs.length; i++) {
+      var s = trs[i].id+"";
+      if (s.match(re)) {
+        var o = document.getElementById(s);
+        if (! o.classList.contains('_treed_hidden')) {
+           o.classList.toggle('_treed_hidden');
+        }
+        if (o.firstChild.firstChild.textContent == "\u25BC") {
+          o.firstChild.firstChild.textContent = "\u25BA";
+        }
+        if (o.firstChild.childNodes.length == 3) {
+          o.firstChild.childNodes[2].textContent = '+';
+        }
+      }
+    }
+    var o = obj.parentNode.parentNode;
+    if (o.firstChild.firstChild.textContent == "\u25BC") {
+      o.firstChild.firstChild.textContent = "\u25BA";
+    }
+    obj.textContent = "+";
+  }
+}
+// Hide unselected tabs
+addLoadEvent(function(){
+  var x = document.getElementsByClassName("_tab_header_li");
+  for (var i = 0; i < x.length; i++) {
+    if (x[i].classList.contains("selected_tab") == false) {
+      var e = document.getElementById (x[i].dataset.tab);
+      e.style.display = "none";
+    }
+  }
+});
+// Change tab
+function change_tab (e, baseId) {
+  // Handle tabs
+  var i = 1;
+  while (true) {
+    var id = baseId + i;
+    var t = document.getElementById (id);
+    if (t == null) {
+      break;
+    }
+    if (id == e.dataset.tab) {
+      t.style.removeProperty("display");
+    }
+    else {
+      t.style.display = "none";
+    }
+    i = i + 1;
+  }
+  // Handle headers
+  $(e).siblings().each( function () {
+    this.classList.remove("selected_tab");
+  });
+  e.classList.add("selected_tab");
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//integrate.cpp: 63 - 65
+--------------------------------------------------------------------------------
+
+63:     v[i * PAD + 0] += dtforce * f[i * PAD + 0];
+64:     v[i * PAD + 1] += dtforce * f[i * PAD + 1];
+65:     v[i * PAD + 2] += dtforce * f[i * PAD + 2];
+66:   }
+67: 

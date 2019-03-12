@@ -4,7 +4,7 @@ MINIMD_BIN="$BIN/miniMD_openmpi"
 
 CONFIG_PATH="$(pwd)/config"
 
-MINIMD_FLAGS="-i $CONFIG_PATH/in.lj.custom -t 2"
+MINIMD_FLAGS="-i $CONFIG_PATH/in.lj.custom -t 4"
 
 mkdir -p results
 

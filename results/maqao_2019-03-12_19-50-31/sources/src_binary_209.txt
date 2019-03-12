@@ -1,0 +1,12 @@
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//comm.cpp: 824 - 830
+--------------------------------------------------------------------------------
+
+824:         if(x[i * PAD + idim] >= lo && x[i * PAD + idim] <= hi) {
+825:           if(nsend >= maxsend_thread[tid])  {
+826:             maxsend_thread[tid] = nsend + 100;
+827:             exc_sendlist_thread[tid] = (int*) realloc(exc_sendlist_thread[tid], (nsend + 100) * sizeof(int));
+828:           }
+829: 
+830:           exc_sendlist_thread[tid][nsend++] = i;
+831:         }
+832:       }

@@ -1,0 +1,4 @@
+/home/matthias/cours/minimd/miniMD/ref/Obj_openmpi//force_lj.cpp: 330 - 330
+--------------------------------------------------------------------------------
+
+330:           f[j * PAD + 1] -= dely * force;
