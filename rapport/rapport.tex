@@ -84,10 +84,10 @@
 
 	Afin d'optimiser le calcul des forces s'exerçant sur chaque atome, miniMD stocke des listes d'atomes voisins. Cette technique est utilisé par la majorité des codes de dynamique moléculaire actuels, bien qu'elle ait l'inconvénient d'utiliser plus de mémoire, c'est à dire environ 1GB pour 500000 atomes simulés.
 
-	Dans sa dernière version, miniMD offre la possibilité de simulés des atomes de nature différente ce qui n'était pas le cas dans sa première version. Cette fonctionnalité, qui permet de mieux modéliser le comportement d'un code de dynamique moléculaire de production, dégrade les performances par rapport à la version initiale. En effet, l'introduction de plusieurs types d'atomes ajoute des indirections au sein du code ce qui le ralentit et diminue les possibilités de vectorisation de ce dernier.
+	Dans sa dernière version, miniMD offre la possibilité de simuler des atomes de nature différente ce qui n'était pas le cas dans sa première version. Cette fonctionnalité, qui permet de mieux modéliser le comportement d'un code de dynamique moléculaire de production, dégrade les performances par rapport à la version initiale. En effet, l'introduction de plusieurs types d'atomes ajoute des indirections au sein du code ce qui le ralentit et diminue les possibilités de vectorisation de ce dernier.
 
 	\subsection{Compilation de l'application}
-		Comme expliqué précédemment, nous compilons la version utilisant MPI et OpenMP. Ses sources peuvent être trouvées dans le sous dossier \textit{ref}. Le code peut alors être simplement compilé en exécutant la commande \textit{make openmpi}. Une fois compilé, le programme peut être testé en utilisant la commande \textit{make test}. Les tests réalisés s'appuient sur des comparaisons avec des résultats précalculés et fournis avec le code source du programme.
+		Comme expliqué précédemment, nous compilons la version utilisant MPI et OpenMP. Ses sources peuvent être trouvées dans le sous-dossier \texttt{ref}. Le code peut alors être simplement compilé en exécutant la commande \texttt{make openmpi}. Une fois compilé, le programme peut être testé en utilisant la commande \texttt{make test}. Les tests réalisés s'appuient sur des comparaisons avec des résultats précalculés et fournis avec le code source du programme.
 \section{Bilan de performances}
 
 	\subsection{Cadre d'expérimentation}
@@ -104,7 +104,7 @@
 
 			La mini-app permet un paramétrage fin du problème physique sous-jacent. Nous avons ainsi pu dimensionner le problème pour avoir un temps d'exécution d'environ 40 secondes sur la machine présentée plus haut, ce qui conduit à la génération d'un million d'atomes.
 
-			La mini-app est exécutée à travers un profiler, ce qui permet de générer un bilan de performances pour un exécution de l'application. Nous avons choisi le profiler Maqao qui permet de visualiser les points chauds et donne des conseils d'optimisation utiliser pleinement les performances de la micro-architecture. Avec Maqao, on utilise le module \texttt{oneview} qui appelle les différents modules d'analyse de l'exécution puis met en page les résultats dans une page web.
+			La mini-app est exécutée à travers un profiler, ce qui permet de générer un bilan de performances pour un exécution de l'application. Nous avons choisi le profiler Maqao qui permet de visualiser les points chauds et donne des conseils d'optimisation permettant d'utiliser pleinement les performances de la micro-architecture. Avec Maqao, on utilise le module \texttt{oneview} qui appelle les différents modules d'analyse de l'exécution puis met en page les résultats dans une page web.
 
 	\subsection{Résultats}
 
@@ -134,9 +134,9 @@
 				\end{center}
 			\end{figure}
 
-			La figure \ref{loop_maqao} donne la part du temps d'exécution global que représente chaque boucle du programme. Un première résultat intéressant est qu'aucune boucle n'a été vectorisé. Cela constitue une bonne piste pour l'optimisation. Par ailleurs, on voit que les 62\% du temps d'exécution liés au boucle sont essentiellement répartis, environ 42\% sur les 62\%, sur trois boucles qui ne font qu'une ligne chacune. En regardant dans le détail la localisation des trois lignes, on se rend compte qu'elle sont côte-à-côte.
+			La figure \ref{loop_maqao} donne la part du temps d'exécution global que représente chaque boucle du programme. Un première résultat intéressant est qu'aucune boucle n'a été vectorisée. Cela constitue une bonne piste pour l'optimisation. Par ailleurs, on voit que les 62\% du temps d'exécution liés aux boucles sont essentiellement répartis (environ 42\% sur les 62\%) sur trois boucles qui ne font qu'une ligne chacune. En regardant dans le détail la localisation des trois lignes, on se rend compte qu'elle sont côte-à-côte.
 
-			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données. En effet, dans cette partie du code on itère sur les atomes puis sur leurs voisins et il est tout à fait possible que deux atomes mettent à jour un mêmevoisin simultanément. Ainsi la présence d'opérations atomiques est indispensable dans cette partie du code.
+			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre les threads pour la mise à jour des données. En effet, dans cette partie du code on itère sur les atomes puis sur leurs voisins et il est tout à fait possible que deux atomes mettent à jour un même voisin simultanément. Ainsi la présence d'opérations atomiques est indispensable dans cette partie du code.
 
 			\begin{figure}[h!]
 				\centering
@@ -152,7 +152,7 @@
 				\label{code:hotspot}
 			\end{figure}
 
-			Ces indications peuvent être à l'origine de la non-vectorisation du système car elle demande au compilateur de rajouter un verrou à chacune de ces actions. On peut notamment observer figure \ref{code:hotspot_lock} le code assembleur d'une de ces trois lignes. On peut noter sur les six premières lignes que les chargement mémoire et les opérations arithmétiques sont scalaires et sur les trois dernières lignes que les lock est implémenté autour d'un \textit{compare and swap} et qu'il est donc \textit{lock-free}.
+			Ces indications peuvent être à l'origine de la non-vectorisation du système car elles demandent au compilateur de rajouter un verrou à chacune de ces actions. On peut notamment observer figure \ref{code:hotspot_lock} le code assembleur d'une de ces trois lignes. On peut noter sur les six premières lignes que les chargements mémoires et les opérations arithmétiques sont scalaires et sur les trois dernières lignes que le lock est implémenté autour d'un \textit{compare and swap} et qu'il est donc \textit{lock-free}.
 
 			\begin{figure}[h!]
 				\centering
@@ -171,7 +171,7 @@
 				\label{code:hotspot_lock}
 			\end{figure}
 
-			Le second point chaud du programme se situe au niveau de la construction de la liste des voisins comme on peut le voir sur la figure \label{loop_maqao}. Dans cette partie du code, on cherche tous le voisins situés à une certaines distance de coupure au sein de bins. Cette portion de code est limitée par la réalisation d'un gather comme on peut le voir sur la figure \ref{code:hotspot_gather}. Une boucle telle que celle-ci ne peut à nouveau pas être vectorisée via des \verb!#pragma simd! car cela indiquerait au compilateur car il existe des dépendances entre les différents éléments.
+			Le second point chaud du programme se situe au niveau de la construction de la liste des voisins comme on peut le voir sur la figure \label{loop_maqao}. Dans cette partie du code, on cherche tous les voisins situés à une certaine distance de coupure au sein de bins. Cette portion de code est limitée par la réalisation d'un \textit{gather} comme on peut le voir sur la figure \ref{code:hotspot_gather}. Une boucle telle que celle-ci ne peut à nouveau pas être vectorisée via des \verb!#pragma simd! car il existe des dépendances entre les différents éléments.
 
 			\begin{figure}[h!]
 				\centering
@@ -185,10 +185,10 @@
 	        \end{figure}
 		\subsection{Tentatives d'optimisation}
 			\subsubsection{Section critique}
-				Etant donné que les expressions atomiques empêchent la vectorisation du premier point chaud, nous avons tenté de remplacer les instructions atomiques individuelles par une section critique englobant les tois instructions afin de les réaliser simultanément. Nénmoins l'implémentation OpenMP des sections critiques utilisent des verrous qui réduisent drastiquement les performances
+				Etant donné que les expressions atomiques empêchent la vectorisation du premier point chaud, nous avons tenté de remplacer les instructions atomiques individuelles par une section critique englobant les trois instructions afin de les réaliser simultanément. Nénmoins l'implémentation OpenMP des sections critiques utilise des verrous qui réduisent drastiquement les performances
 
 			\subsubsection{Mémoire transactionnelle}
-				Avec la même idée que précédemment, nous avons tenté de remplacer les instructions atomiques par une mémoire transactionnelle. Le principe est d'effectuer toutes les opérations puis de les soumettre et de vérifier la cohérence mémoire. S'il y a un problème, tout est défait pour être retenter. L'implémentation de ce type de mémoire est pour l'instant uniquement logiciel. Nous avons tenté d'utiliser l'implémentation de gcc mais cela a encore une fois dégradé les résultats.
+				Avec la même idée que précédemment, nous avons tenté de remplacer les instructions atomiques par une mémoire transactionnelle. Le principe est d'effectuer toutes les opérations puis de les soumettre et de vérifier la cohérence mémoire. En cas de conflit, tout les changements sont annulés puis une nouvelle tentative est faite. L'implémentation de ce type de mémoire est pour l'instant uniquement logicielle. Nous avons tenté d'utiliser l'implémentation de gcc mais cela a encore une fois dégradé les résultats.
 
 		\subsection{Optimisations possibles}
 			\subsubsection{Vectorisation explicite}
