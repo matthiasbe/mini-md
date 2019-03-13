@@ -58,6 +58,10 @@
 \tableofcontents
 \newpage
 
+\section{Dynamique moléculaire}
+	La dynamique moléculaire est un domaine de la simulation numérique qui s'intéresse à l'évolution des systèmes d'atomes dans le temps et qui cherche à en déduire les configurations énergétiques les plus favorables. Cela peut par exemple permettre d'étudier le repliement des protéines afin d'en déduire des connaissances dans le domaine de la biologie.
+	Une simulation de dynamique moléculaire est un processus itératif. A chaque nouveau pas de temps, on calcule les intéractions entre chaque paire d'atomes afin d'en déduire les forces qui s'appliquent sur chaque atome puis le mouvement de ces derniers durant le pas de temps considéré.
+
 \section{Présentation de l'application}
 	L'application sur laquelle nous avons travaillé est MiniMD. Cette application de simulation en dynamique moléculaire est écrite en C++ et est parallèle. Son objectif est de pouvoir tester l'efficacité des nouvelles architectures parallèles dans l'exécution de codes de simulation de dynamique moléculaire. Dans cet objectif, cette mini-application a été conçue afin d'être simple et légère ainsi que facilement adaptable sur de nouvelles architectures matérielles. Les algorithmes de base utilisés dans ce code suivent les algorithmes d'un code de dynamique moléculaire de production bien plus important, LAMMPS.
 
