@@ -167,6 +167,23 @@
 				\end{verbatim}
 			\end{figure}
 
+			Le second point chaud du programme se situe au niveau de la construction de la liste des voisins comme on peut le voir sur la figure \label{loop_maqao}. Dans cette partie du code, on cherche tous le voisins situés à une certaines distance de coupure au sein de bins. Cette portion de code est limitée par la réalisation d'un gather comme on peut le voir sur la figure \ref{code:hotspot_gather}. Une boucle telle que celle-ci ne peut à nouveau pas être vectorisée via des \verb!#pragma simd! car cela indiquerait au compilateur car il existe des dépendances entre les différents éléments.
+
+			\begin{figure}[h!]
+				\caption{Code du gather}
+				\label{code:hotspot_gather}
+				\begin{verbatim}
+					const MMD_float delx = xtmp - x[j * PAD + 0];
+		            const MMD_float dely = ytmp - x[j * PAD + 1];
+		            const MMD_float delz = ztmp - x[j * PAD + 2];
+	            \end{verbatim}
+	        \end{figure}
+		\subsection{Tentatives d'optimisation}
+			\subsubsection{Section critique}
+			\subsubsection{Mémoire transactionnelle}
+
+		\subsection{Optimisations possibles}
+			\subsubsection{Vectorisation explicite}
 
 	\subsection{Analyse du parallélisme}
 		Après avoir étudié les performances du programme quant à ses aspects sequentiels, nous avons étudié l'influence du nombre de threads OpenMP et de processus MPI sur les performances du programme. Afin d'étudier ces paramètres, nous avons utilisé notre accès à AWS afin de profiter d'une machine possédant plus de coeurs que nos ordinateurs portables. La machine que nous avons utilisé possèdait 8 coeurs physiques hyperthreadés cadencés à \SI{2.5}{\giga\hertz}, modèle : \texttt{Intel(R) Xeon(R) CPU E5-2670 v2 @ 2.50GHz}. Nous disposions ainsi de 16 coeurs logiques afin d'étudier l'influence de la parallélisation. Les résultats que nous avons obtenus sont présentés sur la figure \ref{fig:tvsparallel}. On peut observer sur cette figure que la parallélisation permet d'augmenter nettement les performances mais que ce gain n'évolue pas linéairement avec le nombre de threads. En effet, pour 8 threads, on obtient un gain d'environ $4.5\times$ ce qui signifie qu'il existe toujours des parties séquentielles relativement importantes dans le code bien qu'il se parallélise très correctement. On peut aussi remarquer l'effet de l'hyperthreading lorsque le nombre de threads dépasse le nombre de coeurs physiques qui est de 8. En effet, le temps d'exécution augmente lorsque l'on augmente le nombre de threads de 8 à 9 et l'hyperthreading n'apporte un gain que lorsque le nombre de threads devient supérieur à 13. Cela semble indiquer que les unités de calcul des coeurs physiques sont très fortement sollicitées ainsi que leurs pipelines étant donné que l'hyperthreading ne permet pas d'obtenir de gains importants. On peut fnalement noté que pour des faibles nombres de threads, l'utilisation de MPI dégrade les performances par rapport à OpenMP comme on pouvait s'y attendre. Néanmoins lorsque le nombre de threads augmente cette différence s'estompe ce qui nous indique que le temps passé en communication entre les processus MPI est très faible en comparaison au temps d'exécution du programme. Cela semble donc indiquer une bonne à l'échelle de l'application sur des machines multi-noeuds.
