@@ -111,6 +111,7 @@
 		\subsubsection{Métriques globales}
 
 			\begin{figure}[h!]
+				\centering
 				\begin{center}
 					\includegraphics{images/maqao_global_metrics.png}
 					\caption{Métriques global obtenu avec Maqao pour 4 threads}
@@ -125,6 +126,7 @@
 		\subsubsection{Points chauds}
 
 			\begin{figure}[h!]
+				\centering
 				\begin{center}
 					\includegraphics[width=500px]{images/maqao_loops.png}
 					\caption{Statistiques des boucles obtenu avec Maqao pour 4 threads}
@@ -137,8 +139,7 @@
 			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données. En effet, dans cette partie du code on itère sur les atomes puis sur leurs voisins et il est tout à fait possible que deux atomes mettent à jour un mêmevoisin simultanément. Ainsi la présence d'opérations atomiques est indispensable dans cette partie du code.
 
 			\begin{figure}[h!]
-				\caption{Extrait de code correspondant au point chaud}
-				\label{code:hotspot}
+				\centering
 				\begin{verbatim}
 					  #pragma omp atomic
 					  f[j * PAD + 0] -= delx * force;
@@ -147,13 +148,14 @@
 					  #pragma omp atomic
 					  f[j * PAD + 2] -= delz * force;
 				\end{verbatim}
+				\caption{Extrait de code correspondant au point chaud}
+				\label{code:hotspot}
 			\end{figure}
 
 			Ces indications peuvent être à l'origine de la non-vectorisation du système car elle demande au compilateur de rajouter un verrou à chacune de ces actions. On peut notamment observer figure \ref{code:hotspot_lock} le code assembleur d'une de ces trois lignes. On peut noter sur les six premières lignes que les chargement mémoire et les opérations arithmétiques sont scalaires et sur les trois dernières lignes que les lock est implémenté autour d'un \textit{compare and swap} et qu'il est donc \textit{lock-free}.
 
 			\begin{figure}[h!]
-				\caption{Code assembleur du verrou du point chaud}
-				\label{code:hotspot_lock}
+				\centering
 				\begin{verbatim}
 					0x416590 MOV %RAX,%RDX
 					0x416593 MOV %RDX,0x8(%RSP)
@@ -165,18 +167,21 @@
 					0x4165af CMP %RAX,%RDX
 					0x4165b2 JNE 416590
 				\end{verbatim}
+				\caption{Code assembleur du verrou du point chaud}
+				\label{code:hotspot_lock}
 			\end{figure}
 
 			Le second point chaud du programme se situe au niveau de la construction de la liste des voisins comme on peut le voir sur la figure \label{loop_maqao}. Dans cette partie du code, on cherche tous le voisins situés à une certaines distance de coupure au sein de bins. Cette portion de code est limitée par la réalisation d'un gather comme on peut le voir sur la figure \ref{code:hotspot_gather}. Une boucle telle que celle-ci ne peut à nouveau pas être vectorisée via des \verb!#pragma simd! car cela indiquerait au compilateur car il existe des dépendances entre les différents éléments.
 
 			\begin{figure}[h!]
-				\caption{Code du gather}
-				\label{code:hotspot_gather}
+				\centering
 				\begin{verbatim}
 					const MMD_float delx = xtmp - x[j * PAD + 0];
-		            const MMD_float dely = ytmp - x[j * PAD + 1];
-		            const MMD_float delz = ztmp - x[j * PAD + 2];
+					const MMD_float dely = ytmp - x[j * PAD + 1];
+					const MMD_float delz = ztmp - x[j * PAD + 2];
 	            \end{verbatim}
+            	\caption{Code du gather}
+				\label{code:hotspot_gather}
 	        \end{figure}
 		\subsection{Tentatives d'optimisation}
 			\subsubsection{Section critique}
