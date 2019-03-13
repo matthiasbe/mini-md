@@ -73,7 +73,7 @@
 
 \section{Dynamique moléculaire}
 	La dynamique moléculaire est un domaine de la simulation numérique qui s'intéresse à l'évolution des systèmes d'atomes dans le temps et qui cherche à en déduire les configurations énergétiques les plus favorables. Cela peut par exemple permettre d'étudier le repliement des protéines afin d'en déduire des connaissances dans le domaine de la biologie.
-	Une simulation de dynamique moléculaire est un processus itératif. A chaque nouveau pas de temps, on calcule les interactions entre chaque paire d'atomes afin d'en déduire les forces qui s'appliquent sur chaque atome puis le mouvement de ces derniers durant le pas de temps considéré.
+	Une simulation de dynamique moléculaire est un processus itératif. A chaque nouveau pas de temps, on calcule les interactions entre chaque paire d'atomes afin d'en déduire les forces qui s'appliquent sur chaque atome puis le mouvement de ces derniers durant le pas de temps considéré. Les intéractions entre les atomes sont modélisés par des potentiels d'interaction comme celui de Lennard-Jones par exemple.
 
 \section{Présentation de l'application}
 	L'application sur laquelle nous avons travaillé est MiniMD. Cette application de simulation en dynamique moléculaire est écrite en C++ et est parallèle. Son objectif est de pouvoir tester l'efficacité des nouvelles architectures parallèles dans l'exécution de codes de simulation de dynamique moléculaire. Dans cet objectif, cette mini-application a été conçue afin d'être simple et légère ainsi que facilement adaptable sur de nouvelles architectures matérielles. Les algorithmes de base utilisés dans ce code suivent les algorithmes d'un code de dynamique moléculaire de production bien plus important, LAMMPS.
@@ -134,7 +134,7 @@
 
 			La figure \ref{loop_maqao} donne la part du temps d'exécution global que représente chaque boucle du programme. Un première résultat intéressant est qu'aucune boucle n'a été vectorisé. Cela constitue une bonne piste pour l'optimisation. Par ailleurs, on voit que les 62\% du temps d'exécution liés au boucle sont essentiellement répartis, environ 42\% sur les 62\%, sur trois boucles qui ne font qu'une ligne chacune. En regardant dans le détail la localisation des trois lignes, on se rend compte qu'elle sont côte-à-côte.
 
-			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données.
+			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données. En effet, dans cette partie du code on itère sur les atomes puis sur leurs voisins et il est tout à fait possible que deux atomes mettent à jour un mêmevoisin simultanément. Ainsi la présence d'opérations atomiques est indispensable dans cette partie du code.
 
 			\begin{figure}[h!]
 				\caption{Extrait de code correspondant au point chaud}
@@ -149,7 +149,7 @@
 				\end{verbatim}
 			\end{figure}
 
-			Ces indications peuvent être à l'origine de la non-vectorisation du système car elle demande au compilateur de rajouter un verrou à chacune de ces actions. On peut notamment observée figure \ref{code:hotspot_lock} le code assembleur d'une de ces trois lignes. On peut noter sur les six premières lignes que les chargement mémoire et les opérations arithmétiques sont scalaires et sur les trois dernières lignes que les lock est implémenté autour d'un \textit{compare and swap} et qu'il est donc \textit{lock-free}.
+			Ces indications peuvent être à l'origine de la non-vectorisation du système car elle demande au compilateur de rajouter un verrou à chacune de ces actions. On peut notamment observer figure \ref{code:hotspot_lock} le code assembleur d'une de ces trois lignes. On peut noter sur les six premières lignes que les chargement mémoire et les opérations arithmétiques sont scalaires et sur les trois dernières lignes que les lock est implémenté autour d'un \textit{compare and swap} et qu'il est donc \textit{lock-free}.
 
 			\begin{figure}[h!]
 				\caption{Code assembleur du verrou du point chaud}
