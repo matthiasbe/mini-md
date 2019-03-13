@@ -134,7 +134,7 @@
 
 			La figure \ref{loop_maqao} donne la part du temps d'exécution global que représente chaque boucle du programme. Un première résultat intéressant est qu'aucune boucle n'a été vectorisé. Cela constitue une bonne piste pour l'optimisation. Par ailleurs, on voit que les 62\% du temps d'exécution liés au boucle sont essentiellement répartis, environ 42\% sur les 62\%, sur trois boucles qui ne font qu'une ligne chacune. En regardant dans le détail la localisation des trois lignes, on se rend compte qu'elle sont côte-à-côte.
 
-			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données. Ces 
+			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données.
 
 			\begin{figure}[h!]
 				\caption{Extrait de code correspondant au point chaud}
@@ -146,6 +146,24 @@
 					  f[j * PAD + 1] -= dely * force;
 					  #pragma omp atomic
 					  f[j * PAD + 2] -= delz * force;
+				\end{verbatim}
+			\end{figure}
+
+			Ces indications peuvent être à l'origine de la non-vectorisation du système car elle demande au compilateur de rajouter un verrou à chacune de ces actions. On peut notamment observée figure \ref{code:hotspot_lock} le code assembleur d'une de ces trois lignes. On peut noter sur les six premières lignes que les chargement mémoire et les opérations arithmétiques sont scalaires et sur les trois dernières lignes que les lock est implémenté autour d'un \textit{compare and swap} et qu'il est donc \textit{lock-free}.
+
+			\begin{figure}[h!]
+				\caption{Code assembleur du verrou du point chaud}
+				\label{code:hotspot_lock}
+				\begin{verbatim}
+					0x416590 MOV %RAX,%RDX
+					0x416593 MOV %RDX,0x8(%RSP)
+					0x416598 MOV %RDX,%RAX
+					0x41659b MOVSD 0x8(%RSP),%XMM2
+					0x4165a1 SUBSD %XMM4,%XMM2
+					0x4165a5 MOVQ %XMM2,%R8
+					0x4165aa LOCK CMPXCHG %R8,(%RCX)
+					0x4165af CMP %RAX,%RDX
+					0x4165b2 JNE 416590
 				\end{verbatim}
 			\end{figure}
 
