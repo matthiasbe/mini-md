@@ -87,12 +87,52 @@
 
 			La mini-app permet un paramétrage fin du problème physique sous-jacent. Nous avons ainsi pu dimensionner le problème pour avoir un temps d'exécution d'environ 40 secondes sur la machine présentée plus haut, ce qui conduit à la génération d'un million d'atomes.
 
-			La mini-app est exécutée à travers un profiler, ce qui permet de générer un bilan de performances pour un exécution de l'application. Nous avons choisi le profiler Maqao qui permet de visualiser les points chauds et donne des conseils d'optimisation utiliser pleinement les performances de la micro-architecture.
+			La mini-app est exécutée à travers un profiler, ce qui permet de générer un bilan de performances pour un exécution de l'application. Nous avons choisi le profiler Maqao qui permet de visualiser les points chauds et donne des conseils d'optimisation utiliser pleinement les performances de la micro-architecture. Avec Maqao, on utilise le module \texttt{oneview} qui appelle les différents modules d'analyse de l'exécution puis met en page les résultats dans une page web.
 
 	\subsection{Résultats}
 
-		\subsubsection{}
+		\subsubsection{Métriques globales}
 
-\section{Optimisations}
+			\begin{figure}[h!]
+				\begin{center}
+					\includegraphics{images/maqao_global_metrics.png}
+					\caption{Métriques global obtenu avec Maqao pour 4 threads}
+					\label{global_maqao}
+				\end{center}
+			\end{figure}
+
+			La figure \ref{global_maqao} donne les résultats obtenus pour un run avec Maqao avec 4 threads sur la machine présentée ci-dessus. On observe que les résultats sont particulièrement bon. Tout d'abord \textit{Flow Complexity} est au minimum, c'est à dire que le flot de contrôle est prévisible et donc que les prédicateurs de branchement sont très efficaces. Ensuite \textit{Array Access Efficiency} est à 97\% ce qui témoigne d'un très bon accès mémoire, notamment grâce à des accès contigus qui génèrent peu de défaut de cache. Maqao nous dit même clairement qu'aucune optimisation n'est vraiment envisageable en séquentielle sans prendre en compte la capacité à vectoriser.
+
+			Du côté de la vectorisation, le résultat est plus mitigé. On sait que l'unité de calcul utilisé peu vectoriser 128 bits en parallèle, c'est ça dire 4 \texttt{float} ou 2 \texttt{doubles}, ce qui conduit dans le cas théorique à une accélération maximum de 4 pour des opération sur des \texttt{float} et 2 pour des opérations sur les \texttt{doubles}. D'après les métrique de Maqao, une accélération entre 1 et 2 est possible grâce à la vectorisation.
+
+		\subsubsection{Points chauds}
+
+			\begin{figure}[h!]
+				\begin{center}
+					\includegraphics[width=500px]{images/maqao_loops.png}
+					\caption{Statistiques des boucles obtenu avec Maqao pour 4 threads}
+					\label{loop_maqao}
+				\end{center}
+			\end{figure}
+
+			La figure \ref{loop_maqao} donne la part du temps d'exécution global que représente chaque boucle du programme. Un première résultat intéressant est qu'aucune boucle n'a été vectorisé. Cela constitue une bonne piste pour l'optimisation. Par ailleurs, on voit que les 62\% du temps d'exécution liés au boucle sont essentiellement répartis, environ 42\% sur les 62\%, sur trois boucles qui ne font qu'une ligne chacune. En regardant dans le détail la localisation des trois lignes, on se rend compte qu'elle sont côte-à-côte.
+
+			La figure \ref{code:hotspot} donne les lignes correspondantes. On remarque la présence de \verb!#pragma omp atomic! qui permet d'empêcher les \textit{race condition} entre le threads pour la mise à jour des données. Ces 
+
+			\begin{figure}[h!]
+				\caption{Extrait de code correspondant au point chaud}
+				\label{code:hotspot}
+				\begin{verbatim}
+					  #pragma omp atomic
+					  f[j * PAD + 0] -= delx * force;
+					  #pragma omp atomic
+					  f[j * PAD + 1] -= dely * force;
+					  #pragma omp atomic
+					  f[j * PAD + 2] -= delz * force;
+				\end{verbatim}
+			\end{figure}
+
+
+
 
 \end{document}
