@@ -62,6 +62,26 @@
 	L'application sur laquelle nous avons travaillé est MiniMD. Cette application d'environ 5000 lignes de codes écrite en C++ permet de 
 \section{Bilan de performances}
 
+	\subsection{Cadre d'expérimentation}
+		
+		\subsubsection{Matériel d'expérimentation}
+
+			Le programme miniMD est compilé puis exécuté sur un PC de bureau sous Linux Mint ayant 8 Go de mémoire vive et un processeur Intel I3 2.8 GHz de première génération. Ce processeur a une micro-architecture de type Nehalem qui à une vectorisation SSE 4.2. Une telle architecture permet d'effectuer des opérations sur des blocs de 128 bits.
+
+		\subsubsection{Compilation}
+
+			Le programme est compilé avec \texttt{gcc} version 5.4 ainsi que les options \texttt{-Ofast} activant les optimisations du compilateur et \texttt{--funroll-loops} qui optimise le déroulement des boucles. L'option \texttt{-g} est également présente pour pouvoir effectuer le profiling.
+
+		\subsubsection{Exécution et profiling}
+
+			La mini-app permet un paramétrage fin du problème physique sous-jacent. Nous avons ainsi pu dimensionner le problème pour avoir un temps d'exécution d'environ 40 secondes sur la machine présentée plus haut, ce qui conduit à la génération d'un million d'atomes.
+
+			La mini-app est exécutée à travers un profiler, ce qui permet de générer un bilan de performances pour un exécution de l'application. Nous avons choisi le profiler Maqao qui permet de visualiser les points chauds et donne des conseils d'optimisation utiliser pleinement les performances de la micro-architecture.
+
+	\subsection{Résultats}
+
+		\subsubsection{}
+
 \section{Optimisations}
 
 \end{document}
