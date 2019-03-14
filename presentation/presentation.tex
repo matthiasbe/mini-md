@@ -179,8 +179,31 @@
 
 \section{Optimisations}
 	\subsection{Tentatives d'optimisation}
-		\begin{frame}{Tentatives d'optimisation}
-		\end{frame}
+		\begin{frame}[fragile]{Tentatives d'optimisation}
+			\begin{block}{Section critique}
+				\scriptsize
+				\begin{verbatim}
+					#pragma omp critical
+					{
+						f[j * PAD + 0] -= delx * force;
+						f[j * PAD + 1] -= dely * force;
+						f[j * PAD + 2] -= delz * force;
+					}
+				\end{verbatim}
+			\end{block}
+
+			\begin{block}{Mémoire transactionnelle}
+				\scriptsize
+				\begin{verbatim}
+					__transaction_atomic
+					{
+						f[j * PAD + 0] -= delx * force;
+						f[j * PAD + 1] -= dely * force;
+						f[j * PAD + 2] -= delz * force;
+					}
+				\end{verbatim}
+			\end{block}
+\end{frame}
 
 	\subsection{Optimisations envisageables}
 		\begin{frame}{Vectorisation explicite}
