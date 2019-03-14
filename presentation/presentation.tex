@@ -1,0 +1,88 @@
+\documentclass[9.5pt]{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}       % or try default, Darmstadt, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{serif}    % or try default, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\usepackage[utf8]{inputenc} % accents 8 bits dans le fichier
+\usepackage[T1]{fontenc}      % accents codés dans la fonte
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{siunitx}
+\usepackage[mode=buildnew]{standalone}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+% Here's where the presentation starts, with the info for the title slide
+\title[MPNA : MIS]{Présentation AOC \\Application MiniMD}
+\author[\bsc{Beaupère} \& \bsc{Granger}]{Matthias \bsc{Beaupère} \& Pierre \bsc{Granger}}
+\institute{M2 CHPS}
+\date{\today}
+
+\begin{document}
+\setbeamercolor{captioncolor}{fg=white,bg=red!80!white}
+\setbeamertemplate{caption}{%
+\begin{beamercolorbox}[wd=0.8\linewidth, sep=.2ex]{captioncolor}\tiny\centering\insertcaption%
+\end{beamercolorbox}%
+}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Plan}
+	\tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Présentation de la dynamique moléculaire}
+	\begin{frame}{Présentation de la dynamique moléculaire}
+	\end{frame}
+
+\section{Présentation de l'application}
+	\begin{frame}{Présentation de l'application}
+	\end{frame}
+
+	\begin{frame}{Utilisation de l'application}
+		Compilation + test + lancement en général
+	\end{frame}
+
+\section{Etude de performances}
+	\begin{frame}{Cadre d'expérimentation}
+		
+	\end{frame}
+
+	\begin{frame}{Etude générale}
+		
+	\end{frame}
+
+	\begin{frame}{Analyse des points chauds}
+		
+	\end{frame}
+
+\section{Optimisations}
+	\subsection{Tentatives d'optimisation}
+		\begin{frame}{Tentatives d'optimisation}
+		\end{frame}
+
+	\subsection{Optimisations envisageables}
+		\begin{frame}{Vectorisation explicite}
+		\end{frame}
+
+\section{Analyse du parallélisme}
+	\begin{frame}{Analyse du parallélisme}
+	\end{frame}
+
+\section{Conclusion}
+	\begin{frame}{Conclusion}
+	\end{frame}
+
+\end{document}
