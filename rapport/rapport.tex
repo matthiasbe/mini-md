@@ -205,7 +205,7 @@
 		
 		On peut aussi remarquer l'effet de l'hyperthreading lorsque le nombre de threads dépasse le nombre de coeurs physiques qui est de 8. En effet, le temps d'exécution augmente lorsque l'on augmente le nombre de threads de 8 à 9 et l'hyperthreading n'apporte un gain que lorsque le nombre de threads devient supérieur à 13. Cela semble indiquer que les unités de calcul des coeurs physiques sont très fortement sollicitées ainsi que leurs pipelines étant donné que l'hyperthreading ne permet pas d'obtenir de gains importants.
 		
-		On peut fnalement noté que pour des faibles nombres de threads, l'utilisation de MPI dégrade les performances par rapport à OpenMP comme on pouvait s'y attendre. Néanmoins lorsque le nombre de threads augmente cette différence s'estompe ce qui nous indique que le temps passé en communication entre les processus MPI est très faible en comparaison au temps d'exécution du programme. Cela semble donc indiquer une bonne mise à l'échelle de l'application sur des machines multi-noeuds.
+		On peut fnalement noté que pour de faibles nombres de threads, l'utilisation de MPI dégrade les performances par rapport à OpenMP comme on pouvait s'y attendre. Néanmoins lorsque le nombre de threads augmente cette différence s'estompe ce qui nous indique que le temps passé en communication entre les processus MPI est très faible en comparaison au temps d'exécution du programme. Cela semble donc indiquer une bonne mise à l'échelle de l'application sur des machines multi-noeuds.
 		\begin{figure}
 			\centering
 			\begin{tikzpicture}[scale=1.5]
