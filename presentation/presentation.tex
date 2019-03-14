@@ -20,7 +20,22 @@
 \usepackage{algorithmicx}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{pgfplots}
 
+\pgfplotsset{compat=1.3}
+
+\pgfplotsset{
+    discard if not/.style 2 args={
+        x filter/.code={
+            \edef\tempa{\thisrow{#1}}
+            \edef\tempb{#2}
+            \ifx\tempa\tempb
+            \else
+                \def\pgfmathresult{inf}
+            \fi
+        }
+    }
+}
 
 % Here's where the presentation starts, with the info for the title slide
 \title[MPNA : MIS]{Présentation AOC \\Application MiniMD}
@@ -138,6 +153,25 @@
 
 \section{Analyse du parallélisme}
 	\begin{frame}{Analyse du parallélisme}
+		\begin{figure}
+			\centering
+			\begin{tikzpicture}[scale=0.8]
+				\begin{axis}[minor tick num=1,
+					xlabel=Nombre total de threads,
+					ylabel=Temps d'exécution (\si{\second}),
+					ymin=0,
+					ymax=66]
+				\addplot [green, mark=*, discard if not={MPI}{1}] table [x={OMP}, y={t}] {../rapport/data.res};
+				\addplot [blue, mark=*, discard if not={MPI}{2}] table [x expr=\thisrowno{1}*2, y={t}] {../rapport/data.res};
+				\addplot [red, mark=*, discard if not={MPI}{4}] table [x expr=\thisrowno{1}*4, y={t}] {../rapport/data.res};
+				\draw [dashed] (axis cs:9, \pgfkeysvalueof{/pgfplots/ymin}) -- (axis cs:9, \pgfkeysvalueof{/pgfplots/ymax});
+				\legend{MPI = 1, MPI = 2, MPI = 4}
+				\addlegendimage{dashed}
+				\addlegendentry{Hyperthreading}
+				\end{axis}
+			\end{tikzpicture}
+			\caption{Evolution du temps d'exécution en fonction du nombre de processus MPI et du nombre total de threads.\label{fig:tvsparallel}}
+		\end{figure}
 	\end{frame}
 
 \section{Conclusion}
