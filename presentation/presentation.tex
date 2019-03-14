@@ -60,14 +60,35 @@
 
 \section{Présentation de la dynamique moléculaire}
 	\begin{frame}{Présentation de la dynamique moléculaire}
+		\begin{block}{Dynamique moléculaire}
+			Simulation numérique de l'intéraction des atomes entre eux.
+			\begin{itemize}
+				\item Processus iteratif
+				\item Intégration des équations du mouvement
+				\item Potentiels d'interaction entre les atomes
+				\item Exemple d'utilisation : repliement des protéines
+			\end{itemize}
+		\end{block}
+
+		\begin{figure}
+			\includegraphics[width=0.25\linewidth]{images/bs_md.png}
+		\end{figure}
 	\end{frame}
 
 \section{Présentation de l'application}
 	\begin{frame}{Présentation de l'application}
-	\end{frame}
+		\begin{block}{Caractéristiques techniques}
+			\begin{itemize}
+				\item 5000 ligne de code C++ parallèle
+				\item Utilise MPI et OpenMP
+				\item Seulement 2 potentiels implémentés
+				\item Nombreux paramètres simulables
+			\end{itemize}
+		\end{block}
 
-	\begin{frame}{Utilisation de l'application}
-		Compilation + test + lancement en général
+		\begin{block}{Objectif}
+			Programme de test des architectures parallèle en modélisant simplement le comportant d'un code de simulation de dynamique moléculaire.
+		\end{block}
 	\end{frame}
 
 \section{Etude de performances}
@@ -207,9 +228,22 @@
 
 	\subsection{Optimisations envisageables}
 		\begin{frame}{Vectorisation explicite}
-			\begin{figure}
-				\includegraphics[width=\linewidth]{images/vecto.png}
-			\end{figure}
+			\begin{columns}
+				\column{0.7\linewidth}
+					\begin{figure}
+						\includegraphics[width=\linewidth]{images/vecto.png}
+					\end{figure}
+				\column{0.3\linewidth}
+					\begin{block}{Algorithme}
+						\begin{itemize}
+							\item Gather AoS
+							\item AoS $\longrightarrow$ SoA
+							\item Calculs
+							\item SoA $\longrightarrow$ AoS
+							\item Scatter AoS
+						\end{itemize}
+					\end{block}
+			\end{columns}
 		\end{frame}
 
 \section{Analyse du parallélisme}
@@ -237,6 +271,22 @@
 
 \section{Conclusion}
 	\begin{frame}{Conclusion}
+		\begin{block}{Perfomances}
+			\begin{itemize}
+				\item L'application se parallélise bien, peu de communications
+				\item Bons flot de contrôle et accès à la mémoire
+				\item Un point chaud majeur au niveau du noyau de calcul
+			\end{itemize}
+		\end{block}
+
+		\begin{alertblock}{Optimisations du point chaud}
+			\begin{itemize}
+				\item Optimisations limitées à cause des opérations atomiques
+				\item Possibilité d'optimiser les accès avec des conversions AoS/SoA.
+				\item Changer l'algorithme afin d'enlever les instructions atomiques : 2 threads ne doivent pas modifier la même donnée.
+
+			\end{itemize} 
+		\end{alertblock}
 	\end{frame}
 
 \end{document}
