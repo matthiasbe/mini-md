@@ -58,7 +58,7 @@
 \section{Etude de performances}
 	\subsection{Cadre d'expérimentation}
 		\begin{frame}{Matériel}
-			\begin{block}{Matériel}
+			\begin{block}{Processeur et mémoire vive}
 				\begin{itemize}
 					\item Intel Core i5-760 2.80GHz (2011)
 					\item 2 c\oe{}urs physiques (4 logiques)
@@ -75,11 +75,27 @@
 		\end{frame}
 
 		\begin{frame}{Compilation}
-
+			\begin{block}{Compilateur et options}
+				\begin{itemize}
+					\item GCC 5.4
+					\item \verb!-Ofast!
+					\item \verb!--funroll-loops!
+					\item \verb!-g!
+				\end{itemize}
+			\end{block}
 		\end{frame}
 
 		\begin{frame}{Exécution et profiling}
-		
+			\begin{block}{Paramétrage de miniMD}
+				\begin{itemize}
+					\item Taille du problème 64 x 64 x 64
+					\item Densité 0.8 $\rightarrow 10^6$ atomes
+					\item 4 threads OpenMP
+					\item 1 processus MPI
+					\item timestep 5 ms
+					\item durée de simulation 0.5s
+				\end{itemize}
+			\end{block}
 		\end{frame}
 
 	\subsection{Résultats}
